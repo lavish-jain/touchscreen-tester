@@ -1,0 +1,155 @@
+---
+const filters = ['touchstart', 'touchmove', 'touchend', 'touchcancel'];
+---
+
+<div
+	id="event-log-drawer"
+	class="fixed inset-x-0 bottom-0 z-50 hidden translate-y-full flex-col border-t border-hairline bg-canvas shadow-modal transition-transform duration-200 lg:inset-x-auto lg:right-4 lg:bottom-4 lg:w-[420px] lg:rounded-lg lg:border"
+>
+	<div class="flex h-11 shrink-0 items-center justify-between border-b border-hairline px-3">
+		<div class="flex items-center gap-2">
+			<span id="event-log-live-dot" class="h-2 w-2 shrink-0 animate-pulse rounded-full bg-cyan"></span>
+			<p class="text-body-sm-strong text-ink">Touch Event Log</p>
+		</div>
+		<div class="flex items-center gap-1">
+			<button
+				type="button"
+				id="event-log-pause"
+				class="rounded-sm px-2 py-1 text-body-sm text-body hover:bg-canvas-soft hover:text-ink"
+			>
+				Pause
+			</button>
+			<button
+				type="button"
+				id="event-log-clear"
+				class="rounded-sm px-2 py-1 text-body-sm text-body hover:bg-canvas-soft hover:text-ink"
+			>
+				Clear
+			</button>
+			<button
+				type="button"
+				id="event-log-close"
+				aria-label="Close event log"
+				class="flex h-6 w-6 items-center justify-center rounded-sm text-body hover:bg-canvas-soft hover:text-ink"
+			>
+				<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+					<path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+				</svg>
+			</button>
+		</div>
+	</div>
+
+	<div class="flex shrink-0 items-center gap-1.5 overflow-x-auto border-b border-hairline px-3 py-2">
+		{
+			filters.map((f) => (
+				<label class="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-hairline px-2 py-1 font-mono text-caption text-body has-[:checked]:border-ink has-[:checked]:bg-canvas-soft-2 has-[:checked]:text-ink">
+					<input type="checkbox" data-event-log-filter={f} checked class="sr-only" />
+					{f}
+				</label>
+			))
+		}
+	</div>
+
+	<div
+		id="event-log-list"
+		class="h-56 overflow-y-auto bg-screen p-2 font-mono text-caption leading-relaxed text-on-screen/70 lg:h-72"
+	>
+		<p class="text-on-screen/40">Waiting for touch events&hellip; touch anywhere on the page.</p>
+	</div>
+</div>
+
+<script>
+	import { formatClock } from '../../scripts/format';
+
+	const drawer = document.getElementById('event-log-drawer');
+	const list = document.getElementById('event-log-list');
+	const liveDot = document.getElementById('event-log-live-dot');
+	const pauseBtn = document.getElementById('event-log-pause');
+	const clearBtn = document.getElementById('event-log-clear');
+	const closeBtn = document.getElementById('event-log-close');
+	const filterCheckboxes = Array.from(document.querySelectorAll<HTMLInputElement>('[data-event-log-filter]'));
+
+	const MAX_LINES = 300;
+	const MOVE_THROTTLE_MS = 50;
+	let paused = false;
+	let hasLogged = false;
+	const lastMoveByTouch = new Map<number, number>();
+
+	function setOpen(open: boolean): void {
+		if (!drawer) return;
+		drawer.classList.remove('hidden');
+		drawer.classList.add('flex');
+		requestAnimationFrame(() => {
+			drawer.classList.toggle('translate-y-full', !open);
+		});
+		if (!open) {
+			window.setTimeout(() => {
+				if (drawer.classList.contains('translate-y-full')) drawer.classList.add('hidden');
+			}, 200);
+		}
+	}
+
+	document.addEventListener('eventlog:open', () => setOpen(true));
+	closeBtn?.addEventListener('click', () => setOpen(false));
+
+	pauseBtn?.addEventListener('click', () => {
+		paused = !paused;
+		pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+		liveDot?.classList.toggle('animate-pulse', !paused);
+		liveDot?.classList.toggle('bg-cyan', !paused);
+		liveDot?.classList.toggle('bg-mute', paused);
+	});
+
+	clearBtn?.addEventListener('click', () => {
+		if (list) list.innerHTML = '';
+		hasLogged = false;
+	});
+
+	function activeFilters(): Set<string> {
+		return new Set(filterCheckboxes.filter((c) => c.checked).map((c) => c.dataset.eventLogFilter!));
+	}
+
+	function appendLine(type: string, t: Touch): void {
+		if (!list) return;
+		if (!activeFilters().has(type)) return;
+
+		if (!hasLogged) {
+			list.innerHTML = '';
+			hasLogged = true;
+		}
+
+		const colors: Record<string, string> = {
+			touchstart: 'text-cyan-soft',
+			touchmove: 'text-on-screen/60',
+			touchend: 'text-warning-soft',
+			touchcancel: 'text-error-soft',
+		};
+
+		const line = document.createElement('div');
+		line.className = 'whitespace-nowrap';
+		line.innerHTML = `<span class="text-on-screen/40">${formatClock(Date.now())}</span> <span class="${colors[type] ?? ''}">${type.padEnd(11, ' ')}</span> id:${t.identifier}  x:${Math.round(t.clientX)}  y:${Math.round(t.clientY)}`;
+		list.appendChild(line);
+
+		while (list.children.length > MAX_LINES) {
+			list.firstElementChild?.remove();
+		}
+		list.scrollTop = list.scrollHeight;
+	}
+
+	function handle(e: TouchEvent): void {
+		if (paused) return;
+		for (const t of Array.from(e.changedTouches)) {
+			if (e.type === 'touchmove') {
+				const last = lastMoveByTouch.get(t.identifier) ?? 0;
+				const now = performance.now();
+				if (now - last < MOVE_THROTTLE_MS) continue;
+				lastMoveByTouch.set(t.identifier, now);
+			}
+			appendLine(e.type, t);
+		}
+	}
+
+	for (const type of ['touchstart', 'touchmove', 'touchend', 'touchcancel']) {
+		document.addEventListener(type, handle as EventListener, { capture: true, passive: true });
+	}
+</script>

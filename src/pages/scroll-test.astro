@@ -1,0 +1,134 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import Badge from '../components/ui/Badge.astro';
+
+const title = 'Scroll Test — Check Touch Scrolling Smoothness Online';
+const description =
+	'Free online scroll test. Pan and flick a large grid to check touch scrolling smoothness, with live direction and velocity readouts on any touchscreen.';
+
+const gridCells = Array.from({ length: 30 * 30 }, (_, i) => i);
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test touch scrolling on my phone?',
+		a: 'Drag the grid with one finger in every direction, then flick it quickly. The direction and velocity readouts update as you scroll. Scrolling should start the moment you move, follow your finger closely, and glide to a smooth stop after a flick.',
+	},
+	{
+		q: 'Why is my touch scrolling jumpy or laggy?',
+		a: 'Jumpy scrolling is usually caused by the device being busy (background apps, power saving, or overheating), a low refresh rate, or the screen dropping touch points during the drag. If scrolling only stutters in one part of the screen, run the dead zone test on that area.',
+	},
+	{
+		q: 'What do the velocity numbers mean?',
+		a: 'Velocity is how fast the grid is moving, in pixels per second. A smooth flick shows the number rising quickly and then falling steadily as the scroll slows down. Sudden drops to zero in the middle of a drag mean the scroll stalled.',
+	},
+	{
+		q: 'Does this work for two-finger scrolling on a laptop?',
+		a: 'Yes. On a touchscreen laptop or Chromebook, drag the grid directly on the screen. It also responds to a touchpad or mouse wheel, which is useful for comparing touchscreen scrolling with your trackpad.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Scroll and Pan Test' }} breadcrumb='Scroll Test'>
+	<TestPageHeader
+		eyebrow="Scroll & Pan"
+		title="Does your screen scroll as smoothly as it should?"
+		description="Pan around the oversized grid below in any direction. Watch the live direction and velocity readout while you scroll."
+	/>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<div class="mb-4 flex flex-wrap items-center gap-3">
+			<Badge variant="outline" id="scroll-direction-badge">Direction: idle</Badge>
+			<Badge variant="outline" id="scroll-velocity-badge">Velocity: 0 px/s</Badge>
+			<Badge variant="outline" id="scroll-position-badge">Position: 0, 0</Badge>
+		</div>
+
+		<div
+			id="scroll-zone"
+			class="test-zone-h-65 min-h-[420px] w-full overflow-auto rounded-lg border border-hairline bg-canvas"
+		>
+			<div class="grid w-max grid-cols-[repeat(30,96px)] grid-rows-[repeat(30,96px)]">
+				{
+					gridCells.map((i) => (
+						<div class="flex items-center justify-center border border-hairline/60 font-mono text-caption text-mute">
+							{`${Math.floor(i / 30)},${i % 30}`}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test touch scrolling smoothness">
+		<p>Scrolling is the gesture you use most, so a screen that scrolls with a stutter, a delay, or a jump is the problem you notice first. This scroll test gives you a large grid to pan in every direction, with live direction, velocity, and position readouts so you can see what the screen is doing.</p>
+
+		<h3>How to run the scroll test</h3>
+		<ol>
+			<li>Drag the grid slowly up, down, left, and right. It should follow your finger exactly.</li>
+			<li>Flick the grid quickly in each direction. It should glide and slow down smoothly.</li>
+			<li>Drag diagonally and in circles to check panning in both directions at once.</li>
+			<li>Repeat starting from different parts of the screen, including near the edges.</li>
+		</ol>
+
+		<h3>What smooth scrolling looks like</h3>
+		<ul>
+			<li>The grid starts moving as soon as your finger moves, with no noticeable delay.</li>
+			<li>The cell numbers under your finger stay under your finger during a slow drag.</li>
+			<li>Velocity rises and falls smoothly, without sudden drops to zero mid-drag.</li>
+			<li>A flick coasts to a gradual stop rather than halting abruptly.</li>
+		</ul>
+
+		<h3>Fixing laggy or jumpy scrolling</h3>
+		<p>Turn off Low Power Mode or Battery Saver, set the display to its highest refresh rate, close background apps, and restart the device. If scrolling stalls only when you start from a certain area, map that area with the <a href="/dead-zone-test/">dead zone test</a>. If the problem is a delay rather than a stutter, measure it with the <a href="/latency-test/">touch latency test</a>.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Scroll test questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	const zone = document.getElementById('scroll-zone') as HTMLElement;
+	const directionBadge = document.getElementById('scroll-direction-badge');
+	const velocityBadge = document.getElementById('scroll-velocity-badge');
+	const positionBadge = document.getElementById('scroll-position-badge');
+
+	let lastX = 0;
+	let lastY = 0;
+	let lastT = performance.now();
+	let idleTimer: number | null = null;
+
+	function setIdle(): void {
+		if (directionBadge) directionBadge.textContent = 'Direction: idle';
+		if (velocityBadge) velocityBadge.textContent = 'Velocity: 0 px/s';
+	}
+
+	zone.addEventListener('scroll', () => {
+		const now = performance.now();
+		const dt = now - lastT;
+		if (dt <= 0) return;
+
+		const dx = zone.scrollLeft - lastX;
+		const dy = zone.scrollTop - lastY;
+		const vx = (dx / dt) * 1000;
+		const vy = (dy / dt) * 1000;
+		const speed = Math.hypot(vx, vy);
+
+		let direction = 'idle';
+		if (Math.abs(dx) > Math.abs(dy) && dx !== 0) direction = dx > 0 ? 'right' : 'left';
+		else if (dy !== 0) direction = dy > 0 ? 'down' : 'up';
+
+		if (directionBadge) directionBadge.textContent = `Direction: ${direction}`;
+		if (velocityBadge) velocityBadge.textContent = `Velocity: ${Math.round(speed)} px/s`;
+		if (positionBadge) positionBadge.textContent = `Position: ${Math.round(zone.scrollLeft)}, ${Math.round(zone.scrollTop)}`;
+
+		lastX = zone.scrollLeft;
+		lastY = zone.scrollTop;
+		lastT = now;
+
+		if (idleTimer) window.clearTimeout(idleTimer);
+		idleTimer = window.setTimeout(setIdle, 200);
+	});
+</script>

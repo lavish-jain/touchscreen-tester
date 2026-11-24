@@ -1,0 +1,104 @@
+---
+import Badge from '../ui/Badge.astro';
+
+// Live multi-touch tracker. Renders one zone per page — element ids are fixed.
+interface Props {
+	heightClass?: string;
+}
+
+const { heightClass = 'test-zone-h-70' } = Astro.props;
+---
+
+<div class="mb-4 flex flex-wrap items-center gap-3">
+	<Badge variant="outline" id="active-count-badge">0 active touches</Badge>
+	<Badge variant="outline" id="peak-count-badge">Peak: 0</Badge>
+	<Badge variant="outline" id="max-points-badge">Device max: —</Badge>
+</div>
+
+<div
+	id="multitouch-zone"
+	class={`${heightClass} relative min-h-[420px] w-full touch-none overflow-hidden rounded-lg border border-hairline bg-screen select-none`}
+>
+	<p
+		id="multitouch-placeholder"
+		class="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-body-md text-on-screen/40"
+	>
+		Touch anywhere in this zone with one or more fingers
+	</p>
+</div>
+
+<script>
+	const zone = document.getElementById('multitouch-zone') as HTMLElement;
+	const placeholder = document.getElementById('multitouch-placeholder');
+	const activeBadge = document.getElementById('active-count-badge');
+	const peakBadge = document.getElementById('peak-count-badge');
+	const maxBadge = document.getElementById('max-points-badge');
+
+	const dots = new Map<number, HTMLElement>();
+	const palette = ['#50e3c2', '#ff0080', '#f5a623', '#7928ca', '#0070f3', '#00dfd8', '#ff4d4d', '#f9cb28', '#eb367f', '#aaffec'];
+	let peak = 0;
+
+	if (maxBadge) maxBadge.textContent = `Device max: ${navigator.maxTouchPoints || 'unknown'}`;
+
+	function colorFor(id: number): string {
+		return palette[id % palette.length];
+	}
+
+	function updateCounts(): void {
+		const count = dots.size;
+		peak = Math.max(peak, count);
+		if (activeBadge) activeBadge.textContent = `${count} active touch${count === 1 ? '' : 'es'}`;
+		if (peakBadge) peakBadge.textContent = `Peak: ${peak}`;
+		if (placeholder) placeholder.style.opacity = count > 0 ? '0' : '1';
+	}
+
+	function upsertDot(t: Touch): void {
+		const rect = zone.getBoundingClientRect();
+		const x = t.clientX - rect.left;
+		const y = t.clientY - rect.top;
+		const color = colorFor(t.identifier);
+
+		let dot = dots.get(t.identifier);
+		if (!dot) {
+			dot = document.createElement('div');
+			dot.className =
+				'pointer-events-none absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full font-mono text-caption text-screen shadow-modal';
+			dot.style.width = '84px';
+			dot.style.height = '84px';
+			dot.style.background = color;
+			zone.appendChild(dot);
+			dots.set(t.identifier, dot);
+		}
+
+		dot.style.left = `${x}px`;
+		dot.style.top = `${y}px`;
+
+		const force = typeof t.force === 'number' && t.force > 0 ? t.force.toFixed(2) : '—';
+		dot.innerHTML = `<span class="font-semibold">#${t.identifier}</span><span>${Math.round(x)}, ${Math.round(y)}</span><span>F ${force}</span>`;
+	}
+
+	function removeDot(id: number): void {
+		dots.get(id)?.remove();
+		dots.delete(id);
+	}
+
+	function onStartOrMove(e: TouchEvent): void {
+		e.preventDefault();
+		for (const t of Array.from(e.touches)) upsertDot(t);
+		updateCounts();
+	}
+
+	function onEndOrCancel(e: TouchEvent): void {
+		e.preventDefault();
+		const stillActive = new Set(Array.from(e.touches).map((t) => t.identifier));
+		for (const id of Array.from(dots.keys())) {
+			if (!stillActive.has(id)) removeDot(id);
+		}
+		updateCounts();
+	}
+
+	zone.addEventListener('touchstart', onStartOrMove, { passive: false });
+	zone.addEventListener('touchmove', onStartOrMove, { passive: false });
+	zone.addEventListener('touchend', onEndOrCancel, { passive: false });
+	zone.addEventListener('touchcancel', onEndOrCancel, { passive: false });
+</script>

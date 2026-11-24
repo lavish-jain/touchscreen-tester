@@ -1,15 +1,134 @@
+---
+import '../styles/global.css';
+import NavBar from '../components/layout/NavBar.astro';
+import Footer from '../components/layout/Footer.astro';
+import EventLogDrawer from '../components/layout/EventLogDrawer.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+	/** Describes the page as a WebApplication in structured data. Omit for plain content pages. */
+	app?: { name: string; alternateName?: string[] };
+	/** Label for this page's breadcrumb entry (Home › label). Omit on the homepage. */
+	breadcrumb?: string;
+}
+
+const {
+	title = 'Touch Screen Test — Free Online Touchscreen Tester',
+	description = 'Free touch screen test online for iPhone, Android, iPad & Chromebook. Check multi-touch, gestures, dead zones, tap accuracy & latency — no app, no signup.',
+	app,
+	breadcrumb,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL('/web-app-manifest-512x512.png', Astro.site);
+const siteURL = new URL('/', Astro.site).href;
+const websiteId = `${siteURL}#website`;
+
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebSite',
+			'@id': websiteId,
+			name: 'Free Touchscreen Test',
+			url: siteURL,
+		},
+		app
+			? {
+					'@type': 'WebApplication',
+					name: app.name,
+					...(app.alternateName ? { alternateName: app.alternateName } : {}),
+					url: canonicalURL.href,
+					description,
+					applicationCategory: 'UtilitiesApplication',
+					operatingSystem: 'Any',
+					browserRequirements: 'Requires a modern browser with touch event support',
+					offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+					isPartOf: { '@id': websiteId },
+				}
+			: {
+					'@type': 'WebPage',
+					name: title,
+					url: canonicalURL.href,
+					description,
+					isPartOf: { '@id': websiteId },
+				},
+		...(breadcrumb
+			? [
+					{
+						'@type': 'BreadcrumbList',
+						itemListElement: [
+							{ '@type': 'ListItem', position: 1, name: 'Home', item: siteURL },
+							{ '@type': 'ListItem', position: 2, name: breadcrumb, item: canonicalURL.href },
+						],
+					},
+				]
+			: []),
+	],
+};
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<script is:inline>
+			(function () {
+				try {
+					var stored = localStorage.getItem('theme');
+					if (stored === 'light' || stored === 'dark') {
+						document.documentElement.setAttribute('data-theme', stored);
+					}
+				} catch (e) {}
+			})();
+		</script>
+		<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<meta name="apple-mobile-web-app-title" content="TouchTest" />
+		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+
+		<!-- Google tag (gtag.js) -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-LZZQGKV3Q5"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-LZZQGKV3Q5');
+		</script>
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		<meta name="theme-color" content="#fafafa" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:site_name" content="Free Touchscreen Test" />
+		<meta property="og:image" content={ogImageURL} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	</head>
-	<body>
-		<slot />
+	<body class="flex min-h-screen flex-col bg-canvas-soft text-ink antialiased">
+		<NavBar />
+		<main class="flex-1">
+			<slot />
+		</main>
+		<Footer />
+		<EventLogDrawer />
 	</body>
 </html>
 
@@ -18,6 +137,5 @@
 	body {
 		margin: 0;
 		width: 100%;
-		height: 100%;
 	}
 </style>

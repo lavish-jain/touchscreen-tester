@@ -1,0 +1,92 @@
+---
+import Card from '../ui/Card.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+
+const fields = [
+	{ key: 'touch', label: 'Touch support' },
+	{ key: 'maxTouchPoints', label: 'Max touch points' },
+	{ key: 'pointer', label: 'Primary pointer' },
+	{ key: 'hover', label: 'Hover capability' },
+	{ key: 'browser', label: 'Browser' },
+	{ key: 'os', label: 'Operating system' },
+	{ key: 'screen', label: 'Screen size' },
+	{ key: 'viewport', label: 'Viewport size' },
+	{ key: 'dpr', label: 'Pixel ratio' },
+];
+---
+
+<section id="device-info" class="mx-auto max-w-[1400px] scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
+	<SectionHeader
+		eyebrow="Step 1"
+		title="Device & browser info"
+		description="Useful context for comparing devices or reporting a bug — detected locally, never sent anywhere."
+	/>
+
+	<Card class="mt-8" padding="lg">
+		<dl class="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+			{
+				fields.map((f) => (
+					<div>
+						<dt class="font-mono text-caption uppercase tracking-wide text-mute">{f.label}</dt>
+						<dd data-field={f.key} class="mt-1 text-body-md-strong text-ink">
+							&mdash;
+						</dd>
+					</div>
+				))
+			}
+		</dl>
+		<div class="mt-6 border-t border-hairline pt-5">
+			<dt class="font-mono text-caption uppercase tracking-wide text-mute">User agent</dt>
+			<dd data-field="ua" class="mt-1 break-all font-mono text-caption text-body">
+				&mdash;
+			</dd>
+		</div>
+	</Card>
+</section>
+
+<script>
+	import { detectTouchCapabilities } from '../../scripts/touch-capabilities';
+
+	function detectBrowser(ua: string): string {
+		if (/Edg\//.test(ua)) return 'Edge';
+		if (/OPR\//.test(ua)) return 'Opera';
+		if (/CriOS/.test(ua)) return 'Chrome (iOS)';
+		if (/FxiOS/.test(ua)) return 'Firefox (iOS)';
+		if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) return 'Chrome';
+		if (/Firefox\//.test(ua)) return 'Firefox';
+		if (/Safari\//.test(ua) && /Version\//.test(ua)) return 'Safari';
+		return 'Unknown';
+	}
+
+	function detectOS(ua: string): string {
+		if (/Windows/.test(ua)) return 'Windows';
+		if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
+		if (/Android/.test(ua)) return 'Android';
+		if (/Mac OS X/.test(ua)) return 'macOS';
+		if (/Linux/.test(ua)) return 'Linux';
+		return 'Unknown';
+	}
+
+	function set(field: string, value: string): void {
+		const el = document.querySelector(`[data-field="${field}"]`);
+		if (el) el.textContent = value;
+	}
+
+	const caps = detectTouchCapabilities();
+	const ua = navigator.userAgent;
+
+	set('touch', caps.supportsTouch ? 'Supported' : 'Not detected');
+	set('maxTouchPoints', String(caps.maxTouchPoints));
+	set('pointer', caps.hasCoarsePointer ? 'Coarse (touch/stylus)' : caps.hasFinePointer ? 'Fine (mouse/trackpad)' : 'Unknown');
+	set('hover', caps.hasHover ? 'Hover supported' : 'No hover (typical of touch)');
+	set('browser', detectBrowser(ua));
+	set('os', detectOS(ua));
+	set('screen', `${window.screen.width} × ${window.screen.height}px`);
+	set('viewport', `${window.innerWidth} × ${window.innerHeight}px`);
+	set('dpr', `${window.devicePixelRatio}x`);
+	set('ua', ua);
+
+	window.addEventListener('resize', () => {
+		set('viewport', `${window.innerWidth} × ${window.innerHeight}px`);
+	});
+</script>

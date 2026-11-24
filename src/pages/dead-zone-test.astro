@@ -1,0 +1,203 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import Badge from '../components/ui/Badge.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+
+const title = 'Dead Zone Test — Check Dead Spots on Your Touch Screen';
+const description =
+	'Free touch screen dead zone test. Drag across your whole screen to find dead spots and unresponsive areas on iPhone, Android, iPad, or laptop. Live coverage map.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I check for dead spots on my touch screen?',
+		a: 'Open this dead zone test on the device, tap the fullscreen button, and slowly drag one finger across the whole grid in overlapping rows. Every cell your finger registers on turns colored. Any cell that stays gray after several careful passes is a likely dead spot.',
+	},
+	{
+		q: 'What causes dead zones on a touchscreen?',
+		a: 'The most common causes are physical: a cracked or pressure-damaged digitizer, liquid damage, a loose or damaged display connector, or a low-quality replacement screen. Software glitches, a badly fitted screen protector, or a dirty screen can also make an area feel dead.',
+	},
+	{
+		q: 'Can a touch screen dead zone be fixed?',
+		a: 'If the cause is software, a restart, a system update, or removing the screen protector often fixes it. If the same area stays unresponsive after that, the digitizer is usually damaged and the screen (or digitizer layer) needs to be replaced.',
+	},
+	{
+		q: 'Why can’t I reach the very edges of my screen in the test?',
+		a: 'Browsers reserve some space for the address bar, status bar, and system gestures such as swipe-to-go-home. Use the fullscreen button to maximize the test area. On iPhone, where web fullscreen isn’t available, rotate to landscape and scroll so the browser bars collapse.',
+	},
+	{
+		q: 'What coverage percentage should I get?',
+		a: 'With careful passes, a healthy screen reaches 100%. If you get stuck at 95–99% and the gray cells are random, you probably just missed them — go over them again. If the gray cells form a line, band, or cluster that never fills, that is a real dead zone.',
+	},
+	{
+		q: 'Is this the same as a touch screen sensitivity test?',
+		a: 'Partly. The dead zone test checks whether every area registers touch at all. For sensitivity — how quickly and precisely the screen responds — also run the latency test and the tap accuracy test.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Touch Screen Dead Zone Test' }} breadcrumb='Dead Zone Test'>
+	<TestPageHeader
+		eyebrow="Dead Zone Coverage Map"
+		title="Find the spots your screen can't feel"
+		description="Drag steadily across every part of the grid below, edge to edge. Cells you cover turn green — anything left gray after a full pass may be a dead zone."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="deadzone-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<div class="mb-4 flex flex-wrap items-center gap-3">
+			<Badge variant="success" id="coverage-badge">Coverage: 0%</Badge>
+			<Badge variant="outline" id="deadzone-count-badge">Cells: 0</Badge>
+			<button
+				type="button"
+				id="deadzone-reset"
+				class="ml-auto rounded-sm border border-hairline bg-canvas px-3 py-1.5 text-button-md text-ink hover:bg-canvas-soft"
+			>
+				Reset
+			</button>
+		</div>
+
+		<div
+			id="deadzone-zone"
+			class="test-zone-h-70 relative min-h-[420px] w-full touch-none overflow-hidden rounded-lg border border-hairline bg-canvas"
+		>
+			<div id="deadzone-grid" class="absolute inset-0 grid"></div>
+			<p id="deadzone-placeholder" class="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-body-md text-mute">Drag your finger across this whole area</p>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to check for dead spots on your touch screen">
+		<p>A dead zone is a part of the screen that doesn’t respond to touch, or only responds some of the time. It might be a thin strip along one edge, a band across the middle where the screen was flexed, or a patch around a crack. Dead zones are easy to miss in normal use because you naturally adjust where you tap. This test maps your whole screen so they become obvious.</p>
+
+		<h3>How to run the dead zone test</h3>
+		<ol>
+			<li>Remove any case that covers the screen edges, and wipe the screen clean.</li>
+			<li>Tap the <strong>fullscreen</strong> button so the grid covers as much of the display as possible.</li>
+			<li>Drag one finger slowly from left to right across the top row, then move down slightly and drag back. Overlap your rows.</li>
+			<li>Repeat vertically, top to bottom, so every cell is crossed at least twice.</li>
+			<li>Look for cells that are still gray. Go over them again slowly with light, steady pressure.</li>
+		</ol>
+		<p>Drag slowly. Moving fast can skip over cells, which looks like a dead zone but isn’t. Use <strong>Reset</strong> to start a fresh pass at any time.</p>
+
+		<h3>How to read the results</h3>
+		<ul>
+			<li><strong>100% coverage:</strong> every part of the test area registered touch. No dead zones.</li>
+			<li><strong>A few scattered gray cells:</strong> almost always missed cells. Drag over them again.</li>
+			<li><strong>A straight line or band that won’t fill:</strong> a classic digitizer fault, often from a crack, a bend, or a failing connector.</li>
+			<li><strong>A patch around a crack or impact point:</strong> local physical damage to the touch layer.</li>
+			<li><strong>An edge strip that won’t fill:</strong> could be a damaged edge, a case or protector lifting at the edge, or system gesture areas. Try without the case and in fullscreen.</li>
+		</ul>
+
+		<h3>Dead zone or ghost touch?</h3>
+		<p>They’re opposite problems. A dead zone ignores your finger; a ghost touch registers touches you didn’t make. If cells light up on their own, or the page reacts when you aren’t touching it, you have ghost touches instead. The <a href="/multi-touch-test/">multi-touch test</a> makes ghost touches easy to see because every phantom point shows up as its own circle.</p>
+
+		<h3>What to do if you find a dead zone</h3>
+		<ol>
+			<li>Restart the device and run the test again.</li>
+			<li>Remove the screen protector and case, clean the screen, and test again.</li>
+			<li>Install any pending system updates.</li>
+			<li>Charge with the original charger, or unplug entirely — faulty chargers can cause erratic touch behavior.</li>
+			<li>If the same area is still dead, the digitizer is likely damaged. Take a screenshot of the result before visiting a repair shop or making a warranty claim.</li>
+		</ol>
+		<p>Buying a used phone? This is one of the quickest checks to run before you pay. Combine it with the <a href="/multi-touch-test/">multi-touch</a> and <a href="/gesture-test/">gesture</a> tests for a full picture.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Dead zone questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	const zone = document.getElementById('deadzone-zone') as HTMLElement;
+	const grid = document.getElementById('deadzone-grid') as HTMLElement;
+	const placeholder = document.getElementById('deadzone-placeholder');
+	const coverageBadge = document.getElementById('coverage-badge');
+	const countBadge = document.getElementById('deadzone-count-badge');
+	const resetBtn = document.getElementById('deadzone-reset');
+
+	const TARGET_CELL_PX = 36;
+	let cols = 0;
+	let rows = 0;
+	let visited = new Set<number>();
+
+	function buildGrid(): void {
+		const rect = zone.getBoundingClientRect();
+		cols = Math.max(4, Math.round(rect.width / TARGET_CELL_PX));
+		rows = Math.max(4, Math.round(rect.height / TARGET_CELL_PX));
+		grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+		grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+		grid.innerHTML = '';
+		visited = new Set();
+
+		const total = cols * rows;
+		for (let i = 0; i < total; i++) {
+			const cell = document.createElement('div');
+			cell.className = 'border border-hairline/60 bg-canvas-soft transition-colors duration-150';
+			cell.dataset.cellIndex = String(i);
+			grid.appendChild(cell);
+		}
+		updateBadges();
+	}
+
+	// Mobile browsers fire `resize` when the address bar collapses/expands
+	// during scroll, not just on a real size change — rebuilding unconditionally
+	// would wipe the user's coverage progress just from scrolling the page.
+	// Only rebuild when the target column/row count actually changes.
+	function rebuildIfSizeChanged(): void {
+		const rect = zone.getBoundingClientRect();
+		const nextCols = Math.max(4, Math.round(rect.width / TARGET_CELL_PX));
+		const nextRows = Math.max(4, Math.round(rect.height / TARGET_CELL_PX));
+		if (nextCols === cols && nextRows === rows) return;
+		buildGrid();
+	}
+
+	function updateBadges(): void {
+		const total = cols * rows;
+		const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+		if (coverageBadge) coverageBadge.textContent = `Coverage: ${pct}%`;
+		if (countBadge) countBadge.textContent = `Cells: ${visited.size} / ${total}`;
+	}
+
+	function markAt(clientX: number, clientY: number): void {
+		const rect = zone.getBoundingClientRect();
+		const x = clientX - rect.left;
+		const y = clientY - rect.top;
+		if (x < 0 || y < 0 || x >= rect.width || y >= rect.height) return;
+
+		const col = Math.min(cols - 1, Math.floor((x / rect.width) * cols));
+		const row = Math.min(rows - 1, Math.floor((y / rect.height) * rows));
+		const index = row * cols + col;
+
+		if (!visited.has(index)) {
+			visited.add(index);
+			const cell = grid.children[index] as HTMLElement | undefined;
+			cell?.classList.remove('bg-canvas-soft');
+			cell?.classList.add('bg-cyan-deep');
+			updateBadges();
+		}
+	}
+
+	function onTouch(e: TouchEvent): void {
+		e.preventDefault();
+		placeholder?.classList.add('hidden');
+		for (const t of Array.from(e.touches)) markAt(t.clientX, t.clientY);
+	}
+
+	zone.addEventListener('touchstart', onTouch, { passive: false });
+	zone.addEventListener('touchmove', onTouch, { passive: false });
+
+	resetBtn?.addEventListener('click', () => {
+		buildGrid();
+		placeholder?.classList.remove('hidden');
+	});
+
+	window.addEventListener('resize', rebuildIfSizeChanged);
+	buildGrid();
+</script>

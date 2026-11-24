@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import MultiTouchZone from '../components/tests/MultiTouchZone.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+
+const title = 'Laptop Touch Screen Test — Windows & Chromebook Online';
+const description =
+	'Free online touch screen test for laptops. Check multi-touch, dead zones, palm rejection, and tap accuracy on Windows touchscreen laptops, 2-in-1s, and Chromebooks.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How can I test my laptop touch screen?',
+		a: 'Open this page in Chrome or Edge on the laptop, tap the fullscreen button, and touch the test area with one finger, then several. Then run the dead zone test across the whole display and the tap accuracy test to check precision. Make sure you touch the screen — a mouse or touchpad won’t trigger the touch tests.',
+	},
+	{
+		q: 'How do I know if my laptop has a touch screen?',
+		a: 'Open this page and touch the screen. If circles appear in the test area, it has a working touchscreen. On Windows, you can also check Settings → System → About: the Pen and touch line says whether touch input is available. If no touch is detected, a notice appears above the test area.',
+	},
+	{
+		q: 'Why is my laptop touch screen not working?',
+		a: 'On Windows, the touchscreen driver may be disabled or outdated — check Device Manager under Human Interface Devices for “HID-compliant touch screen.” Also try a restart, Windows Update, and the manufacturer’s driver. On Chromebooks, restart and update ChromeOS. If touch is detected but parts of the screen ignore it, run the dead zone test.',
+	},
+	{
+		q: 'How do I calibrate a Windows touch screen?',
+		a: 'Open Control Panel, go to Tablet PC Settings, and choose Calibrate under the Display tab. Follow the on-screen prompts by tapping each crosshair. Run the tap accuracy test before and after to see if it helped.',
+	},
+	{
+		q: 'Does this work as a Chromebook touchscreen test?',
+		a: 'Yes. Chrome on ChromeOS fully supports touch events, so every test on this site works on touchscreen Chromebooks, including flip and tablet-style models.',
+	},
+	{
+		q: 'Does it work in Firefox or Safari on a laptop?',
+		a: 'The tests work best in Chrome and Edge, which handle touch input on Windows touchscreens most consistently. Other browsers may treat touches as mouse input on some devices. MacBooks don’t have touchscreens, so the touch tests won’t run there.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Laptop Touch Screen Test' }} breadcrumb="Laptop Touch Screen Test">
+	<TestPageHeader
+		eyebrow="Laptop & Chromebook"
+		title="Laptop touch screen test"
+		description="Test the touchscreen on a Windows laptop, 2-in-1, or Chromebook. Touch the area below with your fingers — not the touchpad — and every touch appears live with its position."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="multitouch-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<MultiTouchZone heightClass="test-zone-h-60" />
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test a laptop or Chromebook touch screen">
+		<p>Touchscreen laptops have their own set of problems: drivers that quietly get disabled, edges that stop responding where the hinge flexes, and palms that register as taps. This laptop touch screen test runs in your browser, so you can check all of it without installing diagnostic software.</p>
+
+		<h3>How to test a laptop touch screen online</h3>
+		<ol>
+			<li>Open this page in <strong>Chrome or Edge</strong> and click <strong>fullscreen</strong>.</li>
+			<li>Touch the test area with one finger. If nothing appears, see the troubleshooting steps below.</li>
+			<li>Add fingers one at a time and check Peak against Device max. Most touchscreen laptops support 10 points.</li>
+			<li>Rest your palm on the screen as you would while using a stylus, and see whether it shows up as touches.</li>
+			<li>Run the <a href="/dead-zone-test/">dead zone test</a>, paying special attention to the bottom edge near the hinge.</li>
+			<li>Run the <a href="/tap-accuracy-test/">tap accuracy test</a> to check whether touches are offset.</li>
+		</ol>
+
+		<h3>Windows touchscreen troubleshooting</h3>
+		<ul>
+			<li><strong>Check the driver:</strong> open Device Manager → Human Interface Devices and look for “HID-compliant touch screen.” If it has a down arrow, right-click and choose Enable device. If it’s missing, install the touchscreen driver from your laptop manufacturer.</li>
+			<li><strong>Update:</strong> run Windows Update, including optional driver updates.</li>
+			<li><strong>Calibrate:</strong> Control Panel → Tablet PC Settings → Calibrate, if taps land offset from your finger.</li>
+			<li><strong>Restart fully:</strong> choose Restart rather than Shut down so Windows reloads drivers instead of resuming a saved session.</li>
+			<li><strong>Check external displays:</strong> with a second monitor connected, touch input can be mapped to the wrong screen. Use Tablet PC Settings → Setup to assign it to the built-in display.</li>
+		</ul>
+
+		<h3>Chromebook touchscreen troubleshooting</h3>
+		<ul>
+			<li>Restart the Chromebook and install updates in Settings → About ChromeOS.</li>
+			<li>Make sure the screen is clean and dry, and test with the keyboard both open and folded back in tablet mode.</li>
+			<li>Try a Guest session to rule out a misbehaving extension.</li>
+			<li>As a last resort, a Powerwash (factory reset) rules out software. Back up your files first.</li>
+		</ul>
+
+		<h3>Common laptop touch screen problems</h3>
+		<table>
+			<thead>
+				<tr><th>Symptom</th><th>Most likely cause</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Touch doesn’t work at all</td><td>Driver disabled or missing, or the touch controller has failed.</td></tr>
+				<tr><td>Taps land offset from your finger</td><td>Calibration, or touch mapped to the wrong display.</td></tr>
+				<tr><td>Bottom edge dead</td><td>Hinge flex damage, or the panel’s bezel pressing on the screen.</td></tr>
+				<tr><td>Palm triggers clicks</td><td>Weak palm rejection. Use a stylus mode or adjust pen settings.</td></tr>
+				<tr><td>Ghost touches when plugged in</td><td>Charger or grounding noise. Try a different outlet or unplug.</td></tr>
+			</tbody>
+		</table>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Laptop touch screen questions" />
+	<RelatedTests />
+</Layout>

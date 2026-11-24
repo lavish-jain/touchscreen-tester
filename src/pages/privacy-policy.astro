@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+
+const title = 'Privacy Policy — Free Touchscreen Test';
+const description =
+	'Free Touchscreen Test runs entirely in your browser. Read what data we handle, how we use Google Analytics, what we never collect, and how local storage is used.';
+
+const lastUpdated = 'October 13, 2026';
+---
+
+<Layout title={title} description={description} breadcrumb="Privacy Policy">
+	<TestPageHeader
+		eyebrow="Privacy Policy"
+		title="Your touches never leave your device"
+		description={`Last updated: ${lastUpdated}`}
+	/>
+
+	<section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+		<div class="space-y-8 text-body-md text-body">
+			<div>
+				<h2 class="text-display-sm text-ink">Overview</h2>
+				<p class="mt-3">
+					Free Touchscreen Test ("we," "us," "our") provides a browser-based touchscreen diagnostic tool
+					at freetouchscreentest.com (the "Service"). This policy explains what data the Service handles.
+					The short version: every test runs locally in your browser, and we do not collect, store, or
+					transmit the touch, gesture, or drawing data the tests generate. We do use Google Analytics to
+					understand, in aggregate, how many people visit the site and which pages they use.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Information we do not collect</h2>
+				<p class="mt-3">
+					The multi-touch, gesture, draw, tap-accuracy, dead-zone, latency, and scroll tests read touch
+					and pointer events directly from your browser and render results on the page you're looking at.
+					None of that data is sent to a server, stored in a database, or shared with any third party. If
+					you close the tab, the results are gone.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Local storage</h2>
+				<p class="mt-3">The Service uses your browser's <code class="font-mono text-body-sm text-ink">localStorage</code> to remember one thing: your light/dark theme preference. This value is stored only on your own device, is never transmitted anywhere, and can be cleared at any time by clearing your browser's site data.</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Analytics</h2>
+				<p class="mt-3">We use Google Analytics 4, a web analytics service provided by Google LLC, to understand how visitors use the Service &mdash; for example, which pages are visited, how people arrive at the site, and roughly where in the world visits come from. This helps us decide which tests to improve.</p>
+				<p class="mt-3">When you load a page, Google Analytics may collect:</p>
+				<ul class="mt-3 list-disc space-y-2 pl-5">
+					<li>the pages you view and how long you spend on them;</li>
+					<li>the website or search engine that referred you;</li>
+					<li>your browser, operating system, device type, and screen size;</li>
+					<li>your approximate location (country and city), derived from your IP address;</li>
+					<li>a randomly generated identifier stored in a cookie, used to distinguish visits.</li>
+				</ul>
+				<p class="mt-3">Google Analytics does not receive your touch, gesture, drawing, or test results, and we do not send it your name, email address, or any other information that directly identifies you. We use analytics data only in aggregate and do not use it for advertising or to build profiles of individual visitors.</p>
+				<p class="mt-3">Google processes this data on our behalf and may transfer it to servers outside your country. You can learn more in <a href="https://policies.google.com/technologies/partner-sites" class="text-ink underline underline-offset-2 hover:no-underline" rel="noopener">how Google uses information from sites that use its services</a> and in the <a href="https://policies.google.com/privacy" class="text-ink underline underline-offset-2 hover:no-underline" rel="noopener">Google Privacy Policy</a>.</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Cookies</h2>
+				<p class="mt-3">The only cookies set on this site are the Google Analytics cookies described above (named <code class="font-mono text-body-sm text-ink">_ga</code> and <code class="font-mono text-body-sm text-ink">_ga_*</code>). They are used to count visits and distinguish returning visitors, not for advertising. We do not use advertising cookies or show ads.</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Your choices</h2>
+				<ul class="mt-3 list-disc space-y-2 pl-5">
+					<li>You can block or delete cookies in your browser settings. The tests work normally without them.</li>
+					<li>You can opt out of Google Analytics on all websites with the <a href="https://tools.google.com/dlpage/gaoptout" class="text-ink underline underline-offset-2 hover:no-underline" rel="noopener">Google Analytics Opt-out Browser Add-on</a>.</li>
+					<li>Many browsers and content blockers block analytics scripts by default; the Service works fully either way.</li>
+					<li>Depending on where you live, you may have rights to access, correct, or delete personal data. Because we don’t hold data that identifies you, requests about analytics data are best directed to Google, but you can also contact us and we’ll help where we can.</li>
+				</ul>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Server logs</h2>
+				<p class="mt-3">
+					Like virtually any website, our hosting provider (Cloudflare) may automatically record standard
+					technical information for security and reliability purposes &mdash; such as IP address, browser
+					type, and request timestamps &mdash; in server access logs. We do not use these logs to identify individual
+					visitors or to track behavior across sessions.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Contact form</h2>
+				<p class="mt-3">If you reach out through the form on our <a href="/contact-us/" class="text-ink underline underline-offset-2 hover:no-underline">Contact Us</a> page, we use the information you provide solely to respond to your message. We do not add you to a mailing list or share your message with third parties.</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Children's privacy</h2>
+				<p class="mt-3">
+					The Service is not directed at children under 13, and we do not knowingly collect personal
+					information from children. Apart from the aggregate analytics described above, we do not
+					collect personal information from any visitor.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Changes to this policy</h2>
+				<p class="mt-3">
+					We may update this policy from time to time. Material changes will be reflected by updating the
+					"Last updated" date above. Continued use of the Service after a change constitutes acceptance
+					of the revised policy.
+				</p>
+			</div>
+
+			<div class="rounded-lg border border-hairline bg-canvas-soft-2 p-6">
+				<h2 class="text-display-sm text-ink">Questions?</h2>
+				<p class="mt-3">If you have any questions about this Privacy Policy, visit our <a href="/contact-us/" class="text-ink underline underline-offset-2 hover:no-underline">Contact Us</a> page.</p>
+			</div>
+		</div>
+	</section>
+</Layout>

@@ -1,0 +1,52 @@
+---
+interface Props {
+	targetId: string;
+	class?: string;
+}
+
+const { targetId, class: className = '' } = Astro.props;
+---
+
+<button
+	type="button"
+	data-fullscreen-toggle
+	data-fullscreen-target={targetId}
+	class={`inline-flex h-9 items-center gap-1.5 rounded-sm border border-hairline bg-canvas px-3 text-button-md text-ink hover:bg-canvas-soft disabled:cursor-not-allowed disabled:opacity-40 ${className}`}
+>
+	<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+		<path
+			d="M2 6V3.5A1.5 1.5 0 0 1 3.5 2H6M14 6V3.5A1.5 1.5 0 0 0 12.5 2H10M2 10v2.5A1.5 1.5 0 0 0 3.5 14H6M14 10v2.5a1.5 1.5 0 0 1-1.5 1.5H10"
+			stroke="currentColor"
+			stroke-width="1.3"
+			stroke-linecap="round"
+		/>
+	</svg>
+	<span data-fullscreen-label>Fullscreen</span>
+</button>
+
+<script>
+	import { toggleFullscreen, isFullscreen, isFullscreenSupported } from '../../scripts/fullscreen';
+
+	const buttons = document.querySelectorAll<HTMLButtonElement>('[data-fullscreen-toggle]');
+
+	buttons.forEach((btn) => {
+		const targetId = btn.dataset.fullscreenTarget;
+		const target = targetId ? document.getElementById(targetId) : null;
+		const label = btn.querySelector<HTMLElement>('[data-fullscreen-label]');
+		if (!target) return;
+
+		if (!isFullscreenSupported()) {
+			btn.disabled = true;
+			btn.title = 'Fullscreen not supported on this browser';
+			return;
+		}
+
+		btn.addEventListener('click', () => {
+			void toggleFullscreen(target);
+		});
+
+		document.addEventListener('fullscreenchange', () => {
+			if (label) label.textContent = isFullscreen() ? 'Exit fullscreen' : 'Fullscreen';
+		});
+	});
+</script>

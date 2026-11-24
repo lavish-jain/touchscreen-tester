@@ -1,0 +1,255 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+
+const title = 'Draw Test — Finger Touch Screen Test with Drawing Canvas';
+const description =
+	'Free finger drawing test for your touch screen. Draw with one or more fingers to spot gaps, jitter, ghost touches, and lag on any phone, tablet, or laptop.';
+
+const colors = ['#171717', '#0070f3', '#ff0080', '#50e3c2', '#f5a623', '#7928ca'];
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test my touch screen by drawing?',
+		a: 'Draw slow, straight lines and circles across the canvas with one finger, then repeat faster. A healthy screen produces smooth, continuous strokes. Gaps, sudden jumps, or wobbly lines when your finger moved smoothly point to tracking problems.',
+	},
+	{
+		q: 'Why does my line have gaps in it?',
+		a: 'A gap means the screen stopped reporting your finger for a moment. If gaps always appear in the same place, that area may be a dead zone — confirm with the dead zone test. Random gaps can come from a screen protector, moisture, or a weak digitizer.',
+	},
+	{
+		q: 'Why are my lines jagged or wavy?',
+		a: 'Some jitter is normal at very slow speeds, but noticeably wobbly lines when you draw a straight stroke can mean electrical noise (try unplugging the charger), a low-quality replacement screen, or a dirty screen.',
+	},
+	{
+		q: 'Can I draw with more than one finger?',
+		a: 'Yes. Each finger draws its own independent stroke, so you can draw with several at once. It’s a good way to check that multi-touch tracking stays steady over longer movements, not just when fingers are resting.',
+	},
+	{
+		q: 'Does this work with a stylus or Apple Pencil?',
+		a: 'Apple Pencil on iPad works, and so do most styluses on Android tablets. On Windows 2-in-1 laptops, some browsers report pen input as a mouse instead of a touch, so a pen may not draw there — use your finger instead.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Draw Test' }} breadcrumb='Draw Test'>
+	<TestPageHeader
+		eyebrow="Draw / Finger Paint"
+		title="Draw with one finger, or all ten"
+		description="Free-draw on the canvas below. Multiple simultaneous fingers each get their own independent stroke, so you can feel out tracking quality and lag."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="draw-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<div class="mb-4 flex flex-wrap items-center gap-4 rounded-lg border border-hairline bg-canvas p-3">
+			<div class="flex items-center gap-1.5" role="group" aria-label="Stroke color">
+				{
+					colors.map((c) => (
+						<button
+							type="button"
+							data-color={c}
+							class="h-7 w-7 rounded-full border-2 border-transparent transition-transform hover:scale-110 data-[active=true]:border-ink"
+							style={`background:${c}`}
+							aria-label={`Color ${c}`}
+						/>
+					))
+				}
+			</div>
+
+			<label class="flex items-center gap-2 text-body-sm text-body">
+				Size
+				<input id="draw-size" type="range" min="2" max="32" value="6" class="accent-primary" />
+				<span id="draw-size-label" class="w-8 font-mono text-caption text-mute">6px</span>
+			</label>
+
+			<button
+				type="button"
+				id="draw-clear"
+				class="ml-auto rounded-sm border border-hairline bg-canvas px-3 py-1.5 text-button-md text-ink hover:bg-canvas-soft"
+			>
+				Clear
+			</button>
+		</div>
+
+		<div id="draw-zone" class="test-zone-h-65 relative min-h-[420px] w-full overflow-hidden rounded-lg border border-hairline bg-canvas">
+			<canvas id="draw-canvas" class="absolute inset-0 h-full w-full touch-none"></canvas>
+			<p id="draw-placeholder" class="pointer-events-none absolute inset-0 flex items-center justify-center text-body-md text-mute">Start drawing</p>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to use the draw test to check your touch screen">
+		<p>Drawing is one of the most revealing finger touch tests you can do. A single tap only tells you a point registered; a continuous stroke shows whether the screen tracks your finger smoothly from one point to the next. Gaps, jumps, wobble, and lag are all easy to see on the canvas.</p>
+
+		<h3>A simple drawing routine</h3>
+		<ol>
+			<li>Tap the <strong>fullscreen</strong> button.</li>
+			<li>Draw slow horizontal lines from edge to edge, working from the top of the canvas to the bottom.</li>
+			<li>Do the same vertically, then draw a few large circles.</li>
+			<li>Repeat the lines quickly. Fast strokes show lag and dropped points.</li>
+			<li>Draw with two or more fingers at once to check multi-touch tracking while moving.</li>
+			<li>Tap <strong>Clear</strong> and change the stroke size or color as needed.</li>
+		</ol>
+
+		<h3>What to look for</h3>
+		<table>
+			<thead>
+				<tr><th>What you see</th><th>Likely cause</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Smooth, continuous lines</td><td>Healthy touch tracking.</td></tr>
+				<tr><td>Gaps in the same spot every time</td><td>A dead zone in that area.</td></tr>
+				<tr><td>Random gaps</td><td>Weak contact: screen protector, moisture, or a failing digitizer.</td></tr>
+				<tr><td>Wobbly lines on straight strokes</td><td>Electrical noise (often the charger) or a low-quality replacement screen.</td></tr>
+				<tr><td>Stray dots or lines you didn’t draw</td><td>Ghost touches.</td></tr>
+				<tr><td>The line trails well behind your finger</td><td>High touch latency.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>A visual check, not a score</h3>
+		<p>The draw test is deliberately free-form, so it’s best for spotting problems you can see. When you want numbers, measure response time with the <a href="/latency-test/">touch latency test</a>, check full-screen coverage with the <a href="/dead-zone-test/">dead zone test</a>, or score precision with the <a href="/tap-accuracy-test/">tap accuracy test</a>.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Draw test questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	const zone = document.getElementById('draw-zone') as HTMLElement;
+	const canvas = document.getElementById('draw-canvas') as HTMLCanvasElement;
+	const placeholder = document.getElementById('draw-placeholder');
+	const clearBtn = document.getElementById('draw-clear');
+	const sizeInput = document.getElementById('draw-size') as HTMLInputElement;
+	const sizeLabel = document.getElementById('draw-size-label');
+	const colorButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-color]'));
+
+	function isDarkMode(): boolean {
+		const attr = document.documentElement.getAttribute('data-theme');
+		if (attr === 'light') return false;
+		if (attr === 'dark') return true;
+		return window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
+
+	const ctx = canvas.getContext('2d')!;
+
+	let color = colorButtons[0]?.dataset.color ?? '#171717';
+	let size = Number(sizeInput.value);
+	const lastPoint = new Map<number, { x: number; y: number }>();
+
+	function setActiveColor(next: string): void {
+		color = next;
+		colorButtons.forEach((btn) => {
+			btn.dataset.active = String(btn.dataset.color === next);
+		});
+	}
+
+	// Black is invisible against the dark-mode canvas, so the default swatch
+	// is white in dark mode and black in light mode. Keep it in sync whenever
+	// the theme changes, not just at load, so toggling theme without a
+	// reload doesn't strand the wrong default color.
+	const firstColorButton = colorButtons[0];
+	function syncFirstColorButton(): void {
+		if (!firstColorButton) return;
+		const next = isDarkMode() ? '#ffffff' : '#171717';
+		if (firstColorButton.dataset.color === next) return;
+		const wasActive = firstColorButton.dataset.color === color;
+		firstColorButton.dataset.color = next;
+		firstColorButton.style.background = next;
+		if (wasActive) setActiveColor(next);
+	}
+	syncFirstColorButton();
+	new MutationObserver(syncFirstColorButton).observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ['data-theme'],
+	});
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncFirstColorButton);
+
+	function resizeCanvas(): void {
+		const rect = zone.getBoundingClientRect();
+		const dpr = window.devicePixelRatio || 1;
+		const prev = canvas.width > 0 ? canvas.toDataURL() : null;
+		canvas.width = rect.width * dpr;
+		canvas.height = rect.height * dpr;
+		canvas.style.width = `${rect.width}px`;
+		canvas.style.height = `${rect.height}px`;
+		ctx.scale(dpr, dpr);
+		ctx.lineCap = 'round';
+		ctx.lineJoin = 'round';
+		if (prev) {
+			const img = new Image();
+			img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
+			img.src = prev;
+		}
+	}
+
+	setActiveColor(color);
+	resizeCanvas();
+	window.addEventListener('resize', resizeCanvas);
+
+	colorButtons.forEach((btn) => {
+		btn.addEventListener('click', () => setActiveColor(btn.dataset.color ?? color));
+	});
+
+	sizeInput.addEventListener('input', () => {
+		size = Number(sizeInput.value);
+		if (sizeLabel) sizeLabel.textContent = `${size}px`;
+	});
+
+	clearBtn?.addEventListener('click', () => {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		placeholder?.classList.remove('hidden');
+	});
+
+	function pointFor(t: Touch): { x: number; y: number } {
+		const rect = canvas.getBoundingClientRect();
+		return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+	}
+
+	function onTouchStart(e: TouchEvent): void {
+		e.preventDefault();
+		placeholder?.classList.add('hidden');
+		for (const t of Array.from(e.changedTouches)) {
+			const pt = pointFor(t);
+			lastPoint.set(t.identifier, pt);
+			ctx.fillStyle = color;
+			ctx.beginPath();
+			ctx.arc(pt.x, pt.y, size / 2, 0, Math.PI * 2);
+			ctx.fill();
+		}
+	}
+
+	function onTouchMove(e: TouchEvent): void {
+		e.preventDefault();
+		for (const t of Array.from(e.changedTouches)) {
+			const prev = lastPoint.get(t.identifier);
+			const pt = pointFor(t);
+			if (prev) {
+				ctx.strokeStyle = color;
+				ctx.lineWidth = size;
+				ctx.beginPath();
+				ctx.moveTo(prev.x, prev.y);
+				ctx.lineTo(pt.x, pt.y);
+				ctx.stroke();
+			}
+			lastPoint.set(t.identifier, pt);
+		}
+	}
+
+	function onTouchEnd(e: TouchEvent): void {
+		e.preventDefault();
+		for (const t of Array.from(e.changedTouches)) lastPoint.delete(t.identifier);
+	}
+
+	canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+	canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+	canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+	canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
+</script>

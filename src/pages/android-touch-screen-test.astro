@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import MultiTouchZone from '../components/tests/MultiTouchZone.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+
+const title = 'Android Touch Screen Test — Samsung, Pixel & More, No App';
+const description =
+	'Free Android touch screen test that runs in Chrome — no app to install. Check multi-touch, dead zones, ghost touches, and touch delay on Samsung Galaxy, Pixel, and any Android phone.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test my Android touch screen?',
+		a: 'Open this page in Chrome or Samsung Internet, tap the fullscreen button, and touch the test area with one finger, then several. Then run the dead zone, tap accuracy, gesture, and latency tests. Android also has built-in Developer options called Show taps and Pointer location for a system-wide check.',
+	},
+	{
+		q: 'How do I test the touch screen on a Samsung phone?',
+		a: 'Open this page in Samsung Internet or Chrome and run the tests. Samsung also includes diagnostics in the Samsung Members app (Support → Phone diagnostics), and on many Galaxy models dialing *#0*# opens a hidden hardware test menu with a touch test.',
+	},
+	{
+		q: 'Do I need a touch screen test app for Android?',
+		a: 'No. Android browsers fully support touch events, so a browser-based test checks the same things a touch screen test app from Google Play would — without installing anything or granting permissions.',
+	},
+	{
+		q: 'How many touch points does my Android phone support?',
+		a: 'Look at the “Device max” badge above the test area. Most Android phones report 5 or 10. Put fingers down one at a time and watch the Peak counter to confirm the screen actually tracks that many.',
+	},
+	{
+		q: 'How do I increase touch sensitivity on Android?',
+		a: 'On Samsung Galaxy phones, turn on Settings → Display → Touch sensitivity. On Pixel phones, turn on Settings → Display → Screen protector mode (called Increase touch sensitivity on some versions). Other brands often have a similar glove mode or screen protector setting.',
+	},
+	{
+		q: 'Why is my Android phone touching by itself?',
+		a: 'Ghost touches on Android usually come from a faulty charger, a damaged screen protector, a cracked display, or a low-quality replacement screen. Unplug the phone, remove the protector, restart in safe mode to rule out apps, and watch the multi-touch test for phantom circles.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Android Touch Screen Test' }} breadcrumb="Android Touch Screen Test">
+	<TestPageHeader
+		eyebrow="Android"
+		title="Android touch screen test"
+		description="Test any Android phone or tablet in Chrome or Samsung Internet. Touch the area below with one or more fingers — each touch appears live, so dead spots, dropped fingers, and ghost touches stand out."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="multitouch-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<MultiTouchZone heightClass="test-zone-h-60" />
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test an Android touch screen">
+		<p>Android devices vary widely — from flagship Samsung Galaxy and Pixel phones to budget tablets — but they all support the same web touch events, so this Android touchscreen test works the same on every one. It runs in the browser, so you don’t need a Google Play app or any permissions.</p>
+
+		<h3>A quick Android touchscreen check</h3>
+		<ol>
+			<li>Tap <strong>fullscreen</strong> above the test area.</li>
+			<li><strong>Multi-touch:</strong> add fingers one at a time and check the Peak count against Device max.</li>
+			<li><strong>Ghost touches:</strong> put the phone down and don’t touch it for 10 seconds.</li>
+			<li><strong><a href="/dead-zone-test/">Dead zone test</a>:</strong> cover the entire grid, especially near curved edges.</li>
+			<li><strong><a href="/gesture-test/">Gesture test</a>:</strong> swipes, pinch, and rotate.</li>
+			<li><strong><a href="/latency-test/">Latency test</a>:</strong> compare response time with your refresh rate set to its highest.</li>
+		</ol>
+
+		<h3>Android’s built-in touch tools</h3>
+		<p>Android has two hidden settings that show touches across the whole system, not just in the browser. Enable Developer options by going to Settings → About phone and tapping <strong>Build number</strong> seven times. Then, in Settings → System → Developer options (the exact location varies by brand):</p>
+		<ul>
+			<li><strong>Show taps</strong> draws a dot wherever you touch, in every app.</li>
+			<li><strong>Pointer location</strong> draws trails and shows coordinates at the top of the screen — useful for checking the status bar and navigation areas a browser can’t reach.</li>
+		</ul>
+		<p>Turn both off again when you’re done.</p>
+
+		<h3>Testing Samsung Galaxy touch screens</h3>
+		<p>Samsung Internet and Chrome both run every test on this site. Samsung also offers its own checks: the <strong>Samsung Members</strong> app has a phone diagnostics section with a touch screen test, and on many Galaxy models dialing <strong>*#0*#</strong> in the Phone app opens a hardware test menu with a touch grid. If you use a thick screen protector, turn on <strong>Touch sensitivity</strong> in Display settings. Galaxy phones with curved edges also have accidental touch protection, which can make the very edges feel less responsive by design.</p>
+
+		<h3>Common Android touch screen problems</h3>
+		<table>
+			<thead>
+				<tr><th>Symptom</th><th>Most likely cause</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Random taps or swipes</td><td>Charger noise, a damaged protector, or a failing display.</td></tr>
+				<tr><td>Edges unresponsive on a curved screen</td><td>Edge touch rejection settings, a case lip, or a lifting protector.</td></tr>
+				<tr><td>Touch problems began after an app install</td><td>A misbehaving app. Test in safe mode.</td></tr>
+				<tr><td>Laggy touch</td><td>Battery Saver, a 60 Hz refresh rate, or low storage and memory.</td></tr>
+				<tr><td>Area dead after a drop or repair</td><td>Digitizer damage or a poor replacement screen.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>How to fix an Android touch screen</h3>
+		<ol>
+			<li>Clean the screen and remove the case and protector.</li>
+			<li>Unplug the charger and restart the phone.</li>
+			<li>Boot into <strong>safe mode</strong> (on most phones, press and hold Power off in the power menu). If touch works in safe mode, a third-party app is the cause.</li>
+			<li>Install system updates in Settings → System → Software update.</li>
+			<li>Turn on your phone’s touch sensitivity or screen protector mode if you use a protector.</li>
+			<li>If the dead zone test still shows a dead area, the screen likely needs repair.</li>
+		</ol>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Android touch screen questions" />
+	<RelatedTests />
+</Layout>

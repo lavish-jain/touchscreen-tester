@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+
+const title = 'About Us — Free Touchscreen Test';
+const description =
+	'Why we built a free, browser-based touchscreen diagnostic tool with no signup, no ads, and test data that never leaves your device.';
+---
+
+<Layout title={title} description={description} breadcrumb="About Us">
+	<TestPageHeader
+		eyebrow="About Us"
+		title="A touchscreen test that respects your time and your privacy"
+		description="Free Touchscreen Test is an independent, browser-based diagnostic tool. No install, no account, no data leaving your device."
+	/>
+
+	<section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+		<div class="space-y-8 text-body-md text-body">
+			<div>
+				<h2 class="text-display-sm text-ink">Why we built this</h2>
+				<p class="mt-3">
+					Checking whether a touchscreen actually works shouldn't require downloading an app, creating an
+					account, or sitting through ads before you can tap a single test target. Most of the
+					"touchscreen test" apps and sites we found asked for one of those &mdash; so we built one that
+					doesn't. Open the page, run the tests, get an answer.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">What we do</h2>
+				<p class="mt-3">
+					We maintain a small suite of focused, browser-based tests &mdash; multi-touch tracking, gesture
+					recognition, drawing, tap accuracy, dead-zone mapping, response latency, and scroll smoothness
+					&mdash; that run entirely client-side using standard Touch Events and Pointer APIs. Every test
+					reads directly from your device's hardware and browser; nothing is simulated, and nothing you
+					touch is uploaded anywhere.
+				</p>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">What we believe</h2>
+				<ul class="mt-3 list-disc space-y-2 pl-5">
+					<li>A diagnostic tool should work the same on the device you're worried about, right now, without a detour through an app store.</li>
+					<li>Free should mean free &mdash; no paywalled tests, no artificial limits on how many times you can run a check.</li>
+					<li>A tool that reads your screen's touch input has no business sending that data anywhere. See our <a href="/privacy-policy/" class="text-ink underline underline-offset-2 hover:no-underline">Privacy Policy</a> for specifics.</li>
+				</ul>
+			</div>
+
+			<div>
+				<h2 class="text-display-sm text-ink">Who this is for</h2>
+				<p class="mt-3">
+					Anyone about to buy a used phone, checking a new device before the return window closes,
+					diagnosing a cracked or unresponsive screen, or verifying a repair actually fixed the problem.
+					The full suite works on iPhone, iPad, Android phones and tablets, touchscreen Windows laptops,
+					and Chromebooks.
+				</p>
+			</div>
+
+			<div class="rounded-lg border border-hairline bg-canvas-soft-2 p-6">
+				<h2 class="text-display-sm text-ink">Get in touch</h2>
+				<p class="mt-3">Found a bug, have a suggestion, or spotted something inaccurate in a test result? We'd like to hear about it &mdash; visit our <a href="/contact-us/" class="text-ink underline underline-offset-2 hover:no-underline">Contact Us</a> page.</p>
+			</div>
+		</div>
+	</section>
+</Layout>

@@ -1,0 +1,19 @@
+---
+interface Props {
+	padding?: 'md' | 'lg' | 'xl';
+	class?: string;
+	as?: 'div' | 'section';
+}
+
+const { padding = 'lg', class: className = '', as: Tag = 'div' } = Astro.props;
+
+const paddings: Record<string, string> = {
+	md: 'p-4',
+	lg: 'p-6',
+	xl: 'p-8',
+};
+---
+
+<Tag class={`rounded-lg bg-canvas shadow-card ${paddings[padding]} ${className}`}>
+	<slot />
+</Tag>

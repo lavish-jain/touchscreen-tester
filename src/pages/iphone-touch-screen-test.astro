@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+import MultiTouchZone from '../components/tests/MultiTouchZone.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+
+const title = 'iPhone Touch Screen Test — Check Your iPhone Screen Online';
+const description =
+	'Free iPhone touch screen test in Safari — no app needed. Check for ghost touches, dead spots, multi-touch, and touch delay on any iPhone in under a minute.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test the touch screen on my iPhone?',
+		a: 'Open this page in Safari on your iPhone and touch the test area above with one finger, then several. Then run the dead zone test to check every part of the screen, the tap accuracy test for precision, and the latency test for touch delay. There’s nothing to install.',
+	},
+	{
+		q: 'Is there a built-in touch screen test on iPhone?',
+		a: 'iPhone doesn’t include a user-facing touch screen test. Apple Support and Apple Store technicians can run diagnostics, but for a quick check yourself, a browser-based test like this one works on every iPhone running a current version of Safari.',
+	},
+	{
+		q: 'Why is my iPhone screen touching by itself?',
+		a: 'Ghost touches on iPhone are most often caused by a non-certified charging cable or adapter, a damaged or poorly fitted screen protector, a cracked screen, or a non-genuine replacement display. Unplug the charger, remove the protector, and restart the iPhone, then watch the test area for phantom circles.',
+	},
+	{
+		q: 'Why does the test say my iPhone supports 5 touch points?',
+		a: 'Safari reports a maximum of 5 simultaneous touch points to websites on iPhone. That’s a browser limit, not a sign of a fault, and it is enough to test pinch, rotate, and multi-finger tracking.',
+	},
+	{
+		q: 'Can I make the iPhone test fullscreen?',
+		a: 'Safari on iPhone doesn’t allow websites to go fully fullscreen. To maximize the test area, rotate to landscape, scroll down slightly so the address bar shrinks, or use Share → Add to Home Screen and open the test from the home screen icon.',
+	},
+	{
+		q: 'How do I test 3D Touch or Haptic Touch?',
+		a: 'Websites can’t read Haptic Touch, and 3D Touch pressure was removed from newer iPhones. To check Haptic Touch, long-press an app icon on the home screen — a menu should appear. You can adjust its timing in Settings → Accessibility → Touch → Haptic Touch.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'iPhone Touch Screen Test' }} breadcrumb="iPhone Touch Screen Test">
+	<TestPageHeader
+		eyebrow="iPhone"
+		title="iPhone touch screen test"
+		description="Test your iPhone’s touchscreen right in Safari. Touch the area below with one finger, then several — every touch shows up as a circle so you can spot dead spots and ghost touches instantly."
+	/>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<MultiTouchZone heightClass="test-zone-h-60" />
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test your iPhone touch screen">
+		<p>Whether your iPhone has started ignoring taps, typing letters on its own, or you’re checking a used iPhone before buying it, a few minutes of testing will tell you if the touchscreen is healthy. Everything on this site runs in Safari, so there’s no App Store download and nothing is uploaded.</p>
+
+		<h3>A 2-minute iPhone touchscreen check</h3>
+		<ol>
+			<li><strong>Multi-touch (above):</strong> touch with one finger, then add up to five. Each finger should get a steady circle that follows it.</li>
+			<li><strong>Ghost touch check:</strong> lift your fingers and leave the iPhone untouched for 10 seconds. No circles should appear.</li>
+			<li><strong><a href="/dead-zone-test/">Dead zone test</a>:</strong> drag across the whole grid to find areas that don’t respond.</li>
+			<li><strong><a href="/tap-accuracy-test/">Tap accuracy test</a>:</strong> confirms taps land where you aim, which matters for typing.</li>
+			<li><strong><a href="/gesture-test/">Gesture test</a>:</strong> checks swipe, pinch, and long press.</li>
+			<li><strong><a href="/latency-test/">Latency test</a>:</strong> compares touch delay with another device.</li>
+		</ol>
+
+		<h3>Getting the most screen area on iPhone</h3>
+		<p>Safari on iPhone doesn’t let websites go fullscreen, so part of the display is always covered by the status bar and Safari’s toolbar. To test as much of the screen as possible, rotate to landscape and scroll so the toolbar collapses, or add this site to your home screen (Share → Add to Home Screen) and open it from there. To check the very top and bottom edges, use areas of iOS itself — pull down Control Center from the top-right corner and swipe up from the bottom to go home.</p>
+
+		<h3>Common iPhone touch screen problems</h3>
+		<table>
+			<thead>
+				<tr><th>Symptom</th><th>Most likely cause</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Screen taps or types by itself</td><td>Uncertified charger or cable, damaged screen protector, or a faulty display.</td></tr>
+				<tr><td>A strip that never responds</td><td>Digitizer damage, often from a drop or pressure on the screen.</td></tr>
+				<tr><td>Touch worse after a repair</td><td>Non-genuine replacement screen or a connector that wasn’t seated properly.</td></tr>
+				<tr><td>Touch fails only when charging</td><td>Electrical noise from the charger. Try an Apple or MFi-certified cable.</td></tr>
+				<tr><td>Touch freezes, then recovers</td><td>A software hang. Update iOS and restart.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>How to fix an unresponsive iPhone screen</h3>
+		<ol>
+			<li>Clean the screen and remove the case and screen protector.</li>
+			<li>Unplug any charger or accessory.</li>
+			<li>Force restart: press and release volume up, press and release volume down, then hold the side button until the Apple logo appears (iPhone 8 and later).</li>
+			<li>Update iOS in Settings → General → Software Update.</li>
+			<li>Check Settings → Accessibility → Touch, and make sure Touch Accommodations isn’t turned on unintentionally.</li>
+			<li>If the same problem shows up in the tests after all that, the display likely needs service. Apple and authorized providers can run hardware diagnostics.</li>
+		</ol>
+
+		<h3>Buying a used iPhone?</h3>
+		<p>Run the dead zone test across the full screen and the multi-touch test with five fingers before you pay. On iPhone 11 and later, you can also check Settings → General → About for a “Parts and Service History” section, which flags displays that weren’t replaced with genuine Apple parts.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="iPhone touch screen questions" />
+	<RelatedTests />
+</Layout>

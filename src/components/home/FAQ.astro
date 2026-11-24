@@ -1,0 +1,68 @@
+---
+import FaqList, { type Faq } from '../content/FaqList.astro';
+
+const faqs: Faq[] = [
+	{
+		q: 'Is this touchscreen test really free?',
+		a: 'Yes. Every test runs entirely in your browser — no install, no account, no payment. Nothing you touch is uploaded anywhere.',
+	},
+	{
+		q: 'Does it work on my phone, tablet, or touchscreen laptop?',
+		a: 'It works on any device with a touch-capable browser: iPhone, iPad, Android phones and tablets, Windows touchscreen laptops, and Chromebooks. Non-touch devices can still explore most tests with a mouse, but true multi-touch and gesture results need real touch input.',
+	},
+	{
+		q: 'What is a "dead zone" and why does it happen?',
+		a: 'A dead zone is an area of the screen that doesn’t register touch reliably — often from digitizer damage, a cracked screen, moisture, or a loose display connector. The Dead Zone test has you drag across every part of the screen so any unresponsive area shows up clearly.',
+	},
+	{
+		q: 'Why does my device only support a certain number of touch points?',
+		a: 'The number of simultaneous touches (navigator.maxTouchPoints) is set by the device’s touch digitizer hardware, not the browser. Most modern phones support 5–10 points; some budget devices support fewer.',
+	},
+	{
+		q: 'How accurate is the latency test?',
+		a: 'It measures the time from a target appearing on screen to your touch being registered. That number includes your own reaction time (usually 200–300 ms) on top of the device’s touch and display latency, so it’s best for comparing devices or spotting inconsistent lag rather than as a lab-grade hardware measurement.',
+	},
+	{
+		q: 'Do I need to install anything?',
+		a: 'No. Everything runs client-side with standard web APIs (Touch Events, Fullscreen API). Just open the page on the device you want to test.',
+	},
+	{
+		q: 'How do I test the touch screen on my iPhone?',
+		a: 'Open this page in Safari or Chrome on your iPhone, then run the Multi-Touch, Tap Accuracy, and Dead Zone tests. They’ll show your active touch points, tap precision, and any unresponsive areas of the display — no App Store download needed.',
+	},
+	{
+		q: 'How do I test my iPad’s touch screen?',
+		a: 'Load this site in Safari on your iPad and work through the same test suite. The Multi-Touch test is especially useful on iPad since iPadOS supports more simultaneous touch points than most phones, and the Dead Zone test helps catch digitizer issues across the larger display.',
+	},
+	{
+		q: 'How can I test my laptop’s touch screen?',
+		a: 'On a Windows touchscreen laptop or Chromebook, open this site in your browser and run the tests directly on the built-in display. The Scroll & Pan and Dead Zone tests are good first checks for laptop screens, since palm rejection and edge dead zones are common problem areas.',
+	},
+	{
+		q: 'How do I test my phone’s touch screen?',
+		a: 'Visit this page on your phone’s browser (Chrome, Safari, or Samsung Internet all work) and go through the test suite from top to bottom: multi-touch, gestures, drawing, tap accuracy, dead zones, latency, and scrolling.',
+	},
+	{
+		q: 'How do I test touch screen sensitivity?',
+		a: 'Sensitivity has two parts: how quickly the screen reacts and how precisely it registers your finger position. Use the Response Latency test to measure reaction time, and the Tap Accuracy Grid to score positional precision — together they give a good picture of how sensitive your digitizer is.',
+	},
+	{
+		q: 'How do I test my own touch screen?',
+		a: 'Just open this page on the device and run through the seven tests below: Multi-Touch, Gesture Recognition, Draw, Tap Accuracy, Dead Zone, Response Latency, and Scroll & Pan. Each one checks a different aspect of touch performance, from raw responsiveness to full-screen coverage.',
+	},
+	{
+		q: 'How do I test a touch screen?',
+		a: 'The fastest way is a browser-based tool like this one — no app install required. Open it on the touchscreen device, then use the Multi-Touch test to confirm touch points are detected, the Dead Zone test to check full-screen coverage, and the Tap Accuracy and Latency tests to measure precision and response time.',
+	},
+	{
+		q: 'How do I test touch on a Samsung screen?',
+		a: 'Open this page in Samsung Internet or Chrome on your Galaxy phone or tablet, then run the Multi-Touch and Gesture tests to confirm touch points and swipe/pinch recognition, and the Dead Zone test to check the full panel for unresponsive spots.',
+	},
+	{
+		q: 'How do I test an Android touch screen?',
+		a: 'Android’s browsers fully support the Touch Events API this site relies on, so just open the page in Chrome (or your default browser) and run the full test suite. It works the same way across phones, tablets, and Chromebooks running Android apps.',
+	},
+];
+---
+
+<FaqList faqs={faqs} />

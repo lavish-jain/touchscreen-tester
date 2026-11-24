@@ -1,0 +1,241 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import Badge from '../components/ui/Badge.astro';
+
+const title = 'Tap Test — Online Touch Screen Tap Accuracy Tester';
+const description =
+	'Free online tap test. Tap targets on a grid to measure your touch screen’s tap accuracy, hit rate, and precision score on any phone, tablet, or touchscreen laptop.';
+
+const COLS = 5;
+const ROWS = 4;
+const cells = Array.from({ length: COLS * ROWS }, (_, i) => i);
+
+const faqs: Faq[] = [
+	{
+		q: 'How is the tap accuracy score calculated?',
+		a: 'For every hit, the score is based on how far your tap landed from the center of the target cell: dead center scores 100%, and the score drops to 0% at the cell’s edge. Misses score 0. Your final score is the average across all 15 rounds.',
+	},
+	{
+		q: 'What is a good tap accuracy score?',
+		a: 'Most people on a healthy screen hit every target and score somewhere between 60% and 85%, depending on screen size and finger size. A score that is much lower than on another device, or misses on targets you clearly tapped, suggests the screen is misreading where your finger is.',
+	},
+	{
+		q: 'Why do my taps register in the wrong place?',
+		a: 'Common causes are a cracked or poorly installed replacement screen, a screen protector with bubbles or a raised edge, or the device misreading touches after a drop. On Windows laptops, an out-of-date touch calibration can also offset taps.',
+	},
+	{
+		q: 'Is this a touch screen sensitivity test?',
+		a: 'It tests one half of sensitivity: positional precision. For the other half — how quickly the screen responds — use the latency test. Together they give a good picture of how sensitive your touchscreen is.',
+	},
+	{
+		q: 'Does finger size affect the result?',
+		a: 'Yes. Larger fingertips cover more of the screen and the device picks a center point for each touch, so scores vary from person to person. For a fair comparison, have the same person test both devices.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Tap Accuracy Test' }} breadcrumb='Tap Accuracy Test'>
+	<TestPageHeader
+		eyebrow="Tap Accuracy Grid"
+		title="Can you hit the target dead center?"
+		description="A random cell lights up — tap it as precisely as you can. 15 rounds, then you get a hit rate and an average accuracy score."
+	/>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<div class="mb-4 flex flex-wrap items-center gap-3">
+			<Badge variant="outline" id="tap-round-badge">Round 0 / 15</Badge>
+			<Badge variant="success" id="tap-hits-badge">Hits: 0</Badge>
+			<Badge variant="error" id="tap-misses-badge">Misses: 0</Badge>
+			<button
+				type="button"
+				id="tap-restart"
+				class="ml-auto rounded-sm border border-hairline bg-canvas px-3 py-1.5 text-button-md text-ink hover:bg-canvas-soft"
+			>
+				Restart
+			</button>
+		</div>
+
+		<div
+			id="tap-grid"
+			class="grid aspect-[5/4] w-full touch-none gap-2 select-none"
+			style={`grid-template-columns: repeat(${COLS}, 1fr); grid-template-rows: repeat(${ROWS}, 1fr);`}
+		>
+			{
+				cells.map((i) => (
+					<div
+						data-cell={i}
+						class="flex items-center justify-center rounded-md border border-hairline bg-canvas transition-colors"
+					>
+						<span data-cell-dot class="h-3 w-3 scale-0 rounded-full bg-cyan-deep transition-transform" />
+					</div>
+				))
+			}
+		</div>
+
+		<div
+			id="tap-summary"
+			class="mt-6 hidden rounded-lg border border-hairline bg-canvas p-6 text-center"
+		>
+			<p class="font-mono text-caption uppercase tracking-wide text-mute">Results</p>
+			<p id="tap-summary-score" class="mt-2 text-display-xl text-ink">—</p>
+			<p id="tap-summary-detail" class="mt-2 text-body-md text-body">&nbsp;</p>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test touch screen tap accuracy">
+		<p>A tap test checks whether your screen registers taps where your finger actually lands. When touch accuracy drifts, you start hitting the wrong key, the wrong link, or the button next to the one you wanted. It’s a common problem after a screen replacement or a drop, and it’s easy to blame on your own fingers. This tap tester gives you an objective score.</p>
+
+		<h3>How to run the tap test</h3>
+		<ol>
+			<li>Hold the device as you normally would.</li>
+			<li>A random cell in the grid lights up with a dot. Tap the dot as close to the center as you can.</li>
+			<li>Continue for 15 rounds. Hits and misses are counted as you go.</li>
+			<li>At the end you get an average accuracy score and your hit/miss total.</li>
+			<li>Tap <strong>Restart</strong> and repeat with your other hand, or with a stylus, to compare.</li>
+		</ol>
+
+		<h3>How to read your score</h3>
+		<table>
+			<thead>
+				<tr><th>Result</th><th>What it usually means</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>15/15 hits, 70%+</td><td>Precise and reliable touch input.</td></tr>
+				<tr><td>15/15 hits, 50–70%</td><td>Normal, especially on small screens or with larger fingers.</td></tr>
+				<tr><td>Misses on targets you clearly tapped</td><td>Taps are registering in the wrong place. Worth investigating.</td></tr>
+				<tr><td>Misses only in one row or column</td><td>A localized problem. Check that area with the dead zone test.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>What causes poor tap accuracy</h3>
+		<ul>
+			<li><strong>Replacement screens:</strong> low-cost aftermarket digitizers are often less precise than the original.</li>
+			<li><strong>Screen protectors:</strong> bubbles, dust underneath, or a raised edge can shift or block touches.</li>
+			<li><strong>Physical damage:</strong> cracks and pressure damage can distort touch readings around the damaged area.</li>
+			<li><strong>Calibration:</strong> on Windows touchscreen laptops, the touch input can be recalibrated in Control Panel under Tablet PC Settings.</li>
+			<li><strong>Moisture or dirt:</strong> water droplets and grease can make touches register in the wrong spot.</li>
+		</ul>
+
+		<h3>Go further</h3>
+		<p>If taps land in the wrong place only in one area, map the screen with the <a href="/dead-zone-test/">dead zone test</a>. If taps land correctly but feel slow, measure it with the <a href="/latency-test/">touch latency test</a>. And if quick taps are being read as swipes or long presses, the <a href="/gesture-test/">gesture test</a> will show it.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Tap test questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	const TOTAL_ROUNDS = 15;
+	const grid = document.getElementById('tap-grid');
+	const cellEls = Array.from(document.querySelectorAll('[data-cell]'));
+	const roundBadge = document.getElementById('tap-round-badge');
+	const hitsBadge = document.getElementById('tap-hits-badge');
+	const missesBadge = document.getElementById('tap-misses-badge');
+	const restartBtn = document.getElementById('tap-restart');
+	const summary = document.getElementById('tap-summary');
+	const summaryScore = document.getElementById('tap-summary-score');
+	const summaryDetail = document.getElementById('tap-summary-detail');
+
+	let round = 0;
+	let hits = 0;
+	let misses = 0;
+	let scoreTotal = 0;
+	let targetIndex = -1;
+	let finished = false;
+
+	function dotFor(cell: Element): HTMLElement | null {
+		return cell.querySelector<HTMLElement>('[data-cell-dot]');
+	}
+
+	function clearHighlight(): void {
+		cellEls.forEach((cell) => {
+			cell.classList.remove('!border-ink', '!bg-canvas-soft-2');
+			dotFor(cell)?.classList.remove('scale-100');
+			dotFor(cell)?.classList.add('scale-0');
+		});
+	}
+
+	function nextRound(): void {
+		if (round >= TOTAL_ROUNDS) {
+			finish();
+			return;
+		}
+		clearHighlight();
+		targetIndex = Math.floor(Math.random() * cellEls.length);
+		const cell = cellEls[targetIndex];
+		cell.classList.add('!border-ink', '!bg-canvas-soft-2');
+		dotFor(cell)?.classList.remove('scale-0');
+		dotFor(cell)?.classList.add('scale-100');
+		round += 1;
+		if (roundBadge) roundBadge.textContent = `Round ${round} / ${TOTAL_ROUNDS}`;
+	}
+
+	function finish(): void {
+		finished = true;
+		clearHighlight();
+		summary?.classList.remove('hidden');
+		const avg = round > 0 ? Math.round(scoreTotal / round) : 0;
+		if (summaryScore) summaryScore.textContent = `${avg}%`;
+		if (summaryDetail) summaryDetail.textContent = `${hits} hits, ${misses} misses out of ${round} rounds — average accuracy score ${avg}%.`;
+	}
+
+	function registerTap(cellEl: Element, clientX: number, clientY: number): void {
+		if (finished) return;
+		const tappedIndex = Number(cellEl.getAttribute('data-cell') ?? -1);
+		const isHit = tappedIndex === targetIndex;
+
+		if (isHit) {
+			const rect = cellEl.getBoundingClientRect();
+			const cx = rect.left + rect.width / 2;
+			const cy = rect.top + rect.height / 2;
+			const offset = Math.hypot(clientX - cx, clientY - cy);
+			const maxOffset = Math.min(rect.width, rect.height) / 2;
+			const score = Math.max(0, Math.round(100 - (offset / maxOffset) * 100));
+			hits += 1;
+			scoreTotal += score;
+		} else {
+			misses += 1;
+		}
+
+		if (hitsBadge) hitsBadge.textContent = `Hits: ${hits}`;
+		if (missesBadge) missesBadge.textContent = `Misses: ${misses}`;
+		nextRound();
+	}
+
+	function onTouchStart(e: TouchEvent): void {
+		e.preventDefault();
+		const t = e.changedTouches[0];
+		const el = document.elementFromPoint(t.clientX, t.clientY);
+		const cell = el?.closest('[data-cell]');
+		if (cell) registerTap(cell, t.clientX, t.clientY);
+	}
+
+	function onClick(e: MouseEvent): void {
+		if ('ontouchstart' in window) return;
+		const target = e.target as Element | null;
+		const cell = target?.closest('[data-cell]');
+		if (cell) registerTap(cell, e.clientX, e.clientY);
+	}
+
+	function restart(): void {
+		round = 0;
+		hits = 0;
+		misses = 0;
+		scoreTotal = 0;
+		finished = false;
+		summary?.classList.add('hidden');
+		if (hitsBadge) hitsBadge.textContent = 'Hits: 0';
+		if (missesBadge) missesBadge.textContent = 'Misses: 0';
+		nextRound();
+	}
+
+	grid?.addEventListener('touchstart', onTouchStart, { passive: false });
+	grid?.addEventListener('click', onClick);
+	restartBtn?.addEventListener('click', restart);
+
+	nextRound();
+</script>

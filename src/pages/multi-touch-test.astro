@@ -1,0 +1,101 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import MultiTouchZone from '../components/tests/MultiTouchZone.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+
+const title = 'Multi Touch Test — Check Touch Points & Ghost Touches Online';
+const description =
+	'Free online multi touch test. See every finger your screen tracks at once, check how many touch points it supports, and spot ghost touches on any phone or tablet.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How many touch points does my phone support?',
+		a: 'Check the “Device max” badge above the test area — it shows the value your browser reports. Most phones and tablets report 5 or 10 points. Then place fingers down one at a time and watch the Peak counter to confirm how many the screen actually tracks.',
+	},
+	{
+		q: 'Why does the test show fewer touches than fingers I’m using?',
+		a: 'Every touchscreen has a hardware limit, and fingers that are very close together can merge into a single point. Spread your fingers apart. If the count still stops below the reported device max, or drops randomly, the digitizer may be faulty.',
+	},
+	{
+		q: 'Why does the device max say 5 on my iPhone or iPad?',
+		a: 'Safari on iPhone and iPad reports 5 touch points to websites, even though the hardware can track more for system gestures. Use the Peak counter with more fingers to see what the browser actually delivers.',
+	},
+	{
+		q: 'What does the F (force) value mean?',
+		a: 'It’s the pressure value the browser reports for that touch, from 0 to 1. Most finger touches on modern phones don’t report pressure, so it shows a dash. Stylus input such as Apple Pencil or some Samsung S Pen devices may report real pressure.',
+	},
+	{
+		q: 'How do I spot ghost touches with this test?',
+		a: 'Put the device down and don’t touch the screen. Any circle that appears on its own is a ghost touch. Also watch for extra circles appearing next to your real fingers. Try again unplugged from the charger, since charger noise is a common cause.',
+	},
+	{
+		q: 'Does this multi-touch test work on Android?',
+		a: 'Yes. Chrome, Samsung Internet, and other Android browsers fully support touch events, so the test works on Samsung Galaxy, Pixel, OnePlus, Xiaomi, and other Android phones and tablets, as well as iPhone, iPad, and touchscreen laptops.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Multi-Touch Test' }} breadcrumb='Multi-Touch Test'>
+	<TestPageHeader
+		eyebrow="Multi-Touch Tracking"
+		title="How many fingers is your screen actually tracking?"
+		description="Place multiple fingers on the zone below. Each active touch renders live as a labeled circle with its identifier, coordinates, and pressure (where supported)."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="multitouch-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<MultiTouchZone />
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to use the multi touch test">
+		<p>A multi-touch test shows exactly how many fingers your screen can track at the same time, and whether each one is tracked cleanly. That matters for pinch-to-zoom, two-finger scrolling, games, and drawing apps. It’s also the quickest way to catch ghost touches and fingers that drop out mid-gesture.</p>
+
+		<h3>How to test multi-touch on your screen</h3>
+		<ol>
+			<li>Tap the <strong>fullscreen</strong> button for the largest test area.</li>
+			<li>Place one finger down. A colored circle appears with its ID, X/Y position, and force value.</li>
+			<li>Add fingers one at a time, spreading them apart. Watch the active count and the <strong>Peak</strong> counter.</li>
+			<li>Move all fingers around slowly. Each circle should follow its finger smoothly without jumping or disappearing.</li>
+			<li>Lift your fingers and leave the screen untouched for 10 seconds to check for ghost touches.</li>
+		</ol>
+
+		<h3>What the readouts mean</h3>
+		<table>
+			<thead>
+				<tr><th>Readout</th><th>Meaning</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Active touches</td><td>How many fingers the browser sees right now.</td></tr>
+				<tr><td>Peak</td><td>The highest number of simultaneous touches during this session.</td></tr>
+				<tr><td>Device max</td><td>The <code>maxTouchPoints</code> value your browser reports for this device.</td></tr>
+				<tr><td>#ID</td><td>The touch identifier. It should stay the same while a finger stays down.</td></tr>
+				<tr><td>F</td><td>Reported pressure (0–1). Usually a dash for fingers; may show real values with a stylus.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>Signs of a multi-touch problem</h3>
+		<ul>
+			<li><strong>Circles that vanish while your finger is still down</strong> — dropped touches, often from a weak or damaged digitizer.</li>
+			<li><strong>Circles that jump or swap between fingers</strong> — tracking errors, sometimes caused by a poor-quality replacement screen.</li>
+			<li><strong>Circles that appear on their own</strong> — ghost touches. Try unplugging the charger and removing the screen protector.</li>
+			<li><strong>Peak stays well below Device max</strong> even with fingers spread apart — the screen may not be tracking as many points as it should.</li>
+			<li><strong>Touches stop near one edge</strong> — check that area with the <a href="/dead-zone-test/">dead zone test</a>.</li>
+		</ul>
+
+		<h3>Typical touch point limits</h3>
+		<p>Android phones and tablets usually report 5 or 10 touch points, depending on the model. iPhone and iPad report 5 in Safari. Windows touchscreen laptops and Chromebooks often report 10, while some older or budget devices support only 2 to 5. A lower number isn’t a fault on its own — what matters is that the screen reliably tracks as many as it claims.</p>
+		<p>To check two-finger gestures specifically, use the <a href="/gesture-test/">gesture test</a> for pinch and rotate, or draw with several fingers at once in the <a href="/draw-test/">draw test</a> to see tracking over longer movements.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Multi-touch questions" />
+	<RelatedTests />
+</Layout>

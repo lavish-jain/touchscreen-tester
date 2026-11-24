@@ -1,0 +1,96 @@
+---
+import Card from '../ui/Card.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { deviceLinks } from '../../data/links';
+
+const tests = [
+	{
+		href: '/multi-touch-test/',
+		title: 'Multi-Touch Tracking',
+		description: 'Visualize every active touch point live, with ID, coordinates, and pressure.',
+		tag: 'Live',
+	},
+	{
+		href: '/gesture-test/',
+		title: 'Gesture Recognition',
+		description: 'Tap, double-tap, long press, swipe, pinch, and rotate — detected and timestamped.',
+		tag: 'Live',
+	},
+	{
+		href: '/draw-test/',
+		title: 'Draw / Finger Paint',
+		description: 'Free-draw with one or more fingers to feel out responsiveness and lag.',
+		tag: 'Canvas',
+	},
+	{
+		href: '/tap-accuracy-test/',
+		title: 'Tap Accuracy Grid',
+		description: 'Tap a sequence of targets in order and get a precision score.',
+		tag: 'Scored',
+	},
+	{
+		href: '/dead-zone-test/',
+		title: 'Dead Zone Map',
+		description: 'Drag across the whole screen to reveal unresponsive zones.',
+		tag: 'Coverage',
+	},
+	{
+		href: '/latency-test/',
+		title: 'Response Latency',
+		description: 'Measure the delay between a prompt appearing and your tap.',
+		tag: 'Timed',
+	},
+	{
+		href: '/scroll-test/',
+		title: 'Scroll & Pan',
+		description: 'Check scroll smoothness with live direction and velocity readouts.',
+		tag: 'Motion',
+	},
+];
+---
+
+<section id="test-suite" class="mx-auto max-w-[1400px] scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
+	<SectionHeader eyebrow="The suite" title="Seven tests, no page reload lag" description="Pick a test below, or work through them in order." />
+
+	<div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		{
+			tests.map((t) => (
+				<a href={t.href} class="group block h-full">
+					<Card class="h-full transition-shadow group-hover:shadow-card-lg" padding="lg">
+						<div class="flex items-center justify-between">
+							<span class="rounded-full bg-canvas-soft-2 px-2.5 py-1 font-mono text-caption text-mute">{t.tag}</span>
+							<svg
+								class="shrink-0 text-mute transition-transform group-hover:translate-x-0.5 group-hover:text-ink"
+								width="16"
+								height="16"
+								viewBox="0 0 16 16"
+								fill="none"
+								aria-hidden="true"
+							>
+								<path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+						<h3 class="mt-4 text-display-sm text-ink">{t.title}</h3>
+						<p class="mt-2 text-body-sm text-body">{t.description}</p>
+					</Card>
+				</a>
+			))
+		}
+	</div>
+
+	<h3 class="mt-12 font-mono text-caption uppercase tracking-wide text-mute">Test by device</h3>
+	<ul class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		{
+			deviceLinks.map((d) => (
+				<li>
+					<a href={d.href} class="group block h-full">
+						<Card class="h-full transition-shadow group-hover:shadow-card-lg" padding="md">
+							<p class="text-body-md-strong text-ink">{d.label}</p>
+							<p class="mt-1 text-body-sm text-body">{d.description}</p>
+						</Card>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</section>

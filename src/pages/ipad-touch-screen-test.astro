@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import MultiTouchZone from '../components/tests/MultiTouchZone.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+
+const title = 'iPad Touch Screen Test — Check iPad Touch & Sensitivity Online';
+const description =
+	'Free iPad touch screen test in Safari. Check multi-touch, dead spots, screen sensitivity, and Apple Pencil input on any iPad, iPad Air, iPad mini, or iPad Pro.';
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test my iPad touch screen?',
+		a: 'Open this page in Safari on your iPad, tap the fullscreen button, and touch the test area with one finger, then several. Then run the dead zone test across the whole display, and the tap accuracy and latency tests to check screen sensitivity. No app is needed.',
+	},
+	{
+		q: 'How do I test iPad screen sensitivity?',
+		a: 'Sensitivity is how reliably and precisely the screen responds. Use the tap accuracy test to check that taps land where you aim, the latency test to measure response time, and the dead zone test to confirm light touches register everywhere. Compare results with and without your screen protector.',
+	},
+	{
+		q: 'Why is my iPad screen not responding in some areas?',
+		a: 'A section that never responds is usually digitizer damage from a drop, bend, or crack. Large iPads are more prone to flexing, which can damage the touch layer. A screen protector lifting at the edge or a case pressing on the screen can cause similar symptoms, so test without them first.',
+	},
+	{
+		q: 'Can I test Apple Pencil with this?',
+		a: 'Yes. Apple Pencil works in the multi-touch test above and in the draw test. In the multi-touch test, the F value shows the pressure Safari reports for the Pencil, so you can check that pressure changes as you press harder.',
+	},
+	{
+		q: 'Does fullscreen work on iPad?',
+		a: 'Yes. Unlike iPhone, Safari on iPad supports fullscreen for the test area. Tap the fullscreen button above the test to hide Safari’s toolbars and test closer to the edges of the display.',
+	},
+	{
+		q: 'Why does my iPad show ghost touches?',
+		a: 'Common causes include a third-party charger or cable, a damaged screen protector, moisture on the screen, or a failing display. Unplug the iPad, remove the protector, restart, and leave the multi-touch test untouched — any circles that appear are ghost touches.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'iPad Touch Screen Test' }} breadcrumb="iPad Touch Screen Test">
+	<TestPageHeader
+		eyebrow="iPad"
+		title="iPad touch screen test"
+		description="Test your iPad’s touchscreen in Safari. Use several fingers or Apple Pencil in the area below — every touch shows up live, so dead spots, ghost touches, and dropped fingers are easy to see."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="multitouch-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<MultiTouchZone heightClass="test-zone-h-60" />
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test your iPad touch screen">
+		<p>An iPad’s large display makes touch problems both more common and easier to miss. A strip near the edge can stop responding without you noticing until you try to reach a button there. Whether you’re troubleshooting an unresponsive iPad, checking a repair, or buying one secondhand, this iPad touch screen test covers the whole display in a few minutes.</p>
+
+		<h3>A complete iPad touchscreen check</h3>
+		<ol>
+			<li>Tap <strong>fullscreen</strong> above the test area so Safari’s toolbars are hidden.</li>
+			<li><strong>Multi-touch:</strong> place five fingers down, spread apart, and move them around. Each circle should follow its finger.</li>
+			<li><strong>Ghost touches:</strong> lay the iPad flat and don’t touch it for 10 seconds. Nothing should appear.</li>
+			<li><strong><a href="/dead-zone-test/">Dead zone test</a>:</strong> the most important check on iPad. Cover the entire grid, including all four edges.</li>
+			<li><strong><a href="/gesture-test/">Gesture test</a>:</strong> pinch, rotate, and swipe in different areas of the screen.</li>
+			<li><strong><a href="/draw-test/">Draw test</a>:</strong> draw long lines with your finger and with Apple Pencil to check tracking.</li>
+		</ol>
+
+		<h3>Testing iPad screen sensitivity</h3>
+		<p>When an iPad feels “less sensitive,” it usually means light touches don’t always register, or taps land slightly off target. Run the <a href="/tap-accuracy-test/">tap accuracy test</a> to score precision and the <a href="/latency-test/">latency test</a> to measure response time. Then remove your screen protector and run them again. Thick or poorly fitted protectors are the most common reason an iPad feels less responsive than it used to.</p>
+
+		<h3>Testing Apple Pencil</h3>
+		<p>Apple Pencil input shows up in the multi-touch test like a finger, with one useful extra: the <strong>F</strong> value shows pressure. Press lightly, then harder — the number should rise smoothly. In the <a href="/draw-test/">draw test</a>, draw slow straight lines; breaks or wobble that don’t happen with your finger point to a Pencil issue (charge, tip wear, or pairing) rather than the screen.</p>
+
+		<h3>Common iPad touch screen problems</h3>
+		<table>
+			<thead>
+				<tr><th>Symptom</th><th>Most likely cause</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Edge or corner doesn’t respond</td><td>Digitizer damage, or a case or protector pressing on the edge.</td></tr>
+				<tr><td>Band across the screen doesn’t respond</td><td>The iPad was bent or flexed, damaging the touch layer.</td></tr>
+				<tr><td>Phantom taps or zooming</td><td>Charger noise, a damaged protector, or a failing display.</td></tr>
+				<tr><td>Touch works, Pencil doesn’t</td><td>Pencil battery, tip, or pairing. Re-pair in Settings → Apple Pencil (or Bluetooth).</td></tr>
+				<tr><td>Touch slow or skipping</td><td>Low storage, heavy background apps, or an outdated iPadOS.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>How to fix an unresponsive iPad screen</h3>
+		<ol>
+			<li>Clean the screen, and remove the case and screen protector.</li>
+			<li>Unplug the charger and any keyboard or accessory.</li>
+			<li>Restart. For iPads without a Home button: press and release volume up, press and release volume down, then hold the top button until the Apple logo appears. For iPads with a Home button, hold the Home and top buttons together.</li>
+			<li>Update iPadOS in Settings → General → Software Update.</li>
+			<li>If the dead zone test still shows the same unresponsive area, contact Apple or an authorized repair provider.</li>
+		</ol>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="iPad touch screen questions" />
+	<RelatedTests />
+</Layout>

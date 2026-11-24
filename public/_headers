@@ -1,0 +1,41 @@
+/
+  Content-Type: text/html; charset=UTF-8
+
+/about-us/
+  Content-Type: text/html; charset=UTF-8
+
+/contact-us/
+  Content-Type: text/html; charset=UTF-8
+
+/dead-zone-test/
+  Content-Type: text/html; charset=UTF-8
+
+/draw-test/
+  Content-Type: text/html; charset=UTF-8
+
+/gesture-test/
+  Content-Type: text/html; charset=UTF-8
+
+/latency-test/
+  Content-Type: text/html; charset=UTF-8
+
+/multi-touch-test/
+  Content-Type: text/html; charset=UTF-8
+
+/privacy-policy/
+  Content-Type: text/html; charset=UTF-8
+
+/scroll-test/
+  Content-Type: text/html; charset=UTF-8
+
+/tap-accuracy-test/
+  Content-Type: text/html; charset=UTF-8
+
+/terms-and-conditions/
+  Content-Type: text/html; charset=UTF-8
+
+/404
+  Content-Type: text/html; charset=UTF-8
+
+/500
+  Content-Type: text/html; charset=UTF-8

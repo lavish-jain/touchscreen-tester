@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+
+const title = 'Page Not Found — Free Touchscreen Test';
+const description = "The page you're looking for doesn't exist. Head back and run a touchscreen test instead.";
+
+const links = [
+	{ href: '/multi-touch-test/', label: 'Multi-Touch' },
+	{ href: '/gesture-test/', label: 'Gestures' },
+	{ href: '/draw-test/', label: 'Draw' },
+	{ href: '/tap-accuracy-test/', label: 'Tap Accuracy' },
+	{ href: '/dead-zone-test/', label: 'Dead Zones' },
+	{ href: '/latency-test/', label: 'Latency' },
+	{ href: '/scroll-test/', label: 'Scroll & Pan' },
+];
+---
+
+<Layout title={title} description={description}>
+	<section class="mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center sm:px-6 sm:py-28">
+		<p class="font-mono text-caption uppercase tracking-wide text-mute">Error 404</p>
+		<h1 class="mt-3 text-display-xl text-ink">Page not found</h1>
+		<p class="mt-3 text-body-lg text-body">
+			The page you're looking for doesn't exist, may have moved, or the URL was mistyped.
+		</p>
+
+		<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+			<Button href="/">Back to home</Button>
+			<Button href="/contact-us/" variant="secondary">Report a broken link</Button>
+		</div>
+
+		<div class="mt-14 w-full border-t border-hairline pt-8">
+			<p class="mb-4 text-body-sm-strong text-ink">Or jump straight into a test</p>
+			<nav class="flex flex-wrap items-center justify-center gap-2" aria-label="Touch tests">
+				{
+					links.map((link) => (
+						<a
+							href={link.href}
+							class="rounded-full border border-hairline bg-canvas px-3 py-1.5 text-body-sm text-body transition-colors hover:border-hairline-strong hover:text-ink"
+						>
+							{link.label}
+						</a>
+					))
+				}
+			</nav>
+		</div>
+	</section>
+</Layout>

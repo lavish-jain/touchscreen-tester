@@ -1,0 +1,268 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import Badge from '../components/ui/Badge.astro';
+
+const title = 'Touch Latency Test — Check Touch Delay & Screen Response Time';
+const description =
+	'Free touch latency test: measure touch delay and screen response time in milliseconds on any phone, tablet, or laptop. See average, min & max — no app needed.';
+
+const ROUNDS = 8;
+
+const faqs: Faq[] = [
+	{
+		q: 'What is a good touch screen response time?',
+		a: 'On this test, which includes your own reaction time, most people score an average between 200 and 300 ms on a healthy phone or tablet. The device’s share of that is usually somewhere around 30–100 ms. What matters more than the exact number is consistency: rounds that stay within roughly 100 ms of each other suggest the screen is responding reliably.',
+	},
+	{
+		q: 'Why is my touch latency result so high?',
+		a: 'The biggest part of the result is human reaction time, so being tired or distracted adds a lot. On the device side, Low Power Mode or Battery Saver, a 60 Hz refresh rate instead of 90/120 Hz, heavy background apps, a thick screen protector, or a failing digitizer can all add delay. Run the test twice and compare against another device to separate the two.',
+	},
+	{
+		q: 'How do I check touch delay on my phone?',
+		a: 'Open this page in your phone’s browser, tap Start test, and tap the circle the moment it appears. After 8 rounds you get an average, minimum, and maximum in milliseconds. Repeat on a second device with the same hand to see whether your phone is noticeably slower.',
+	},
+	{
+		q: 'Does a 120 Hz screen reduce touch latency?',
+		a: 'Usually, yes. A higher refresh rate shows the target sooner and shortens the wait for the next frame, and many 120 Hz devices also sample touch faster. The difference is typically tens of milliseconds — noticeable when comparing devices back to back, but smaller than normal variation in reaction time.',
+	},
+	{
+		q: 'Can a screen protector cause touch delay?',
+		a: 'A thick or poorly fitted protector usually reduces sensitivity rather than adding true latency, but the effect feels similar: taps that don’t register on the first try. If your results have a wide gap between minimum and maximum, try the test with the protector removed or enable your phone’s screen protector / touch sensitivity mode.',
+	},
+	{
+		q: 'Is this a lab-grade latency measurement?',
+		a: 'No. Browsers can only timestamp when JavaScript receives the touch event, and the result includes human reaction time. Treat it as a practical comparison tool for spotting lag and inconsistency, not as a replacement for high-speed-camera measurements.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Touch Latency Test' }} breadcrumb='Touch Latency Test'>
+	<TestPageHeader
+		eyebrow="Response Latency"
+		title="How fast can your screen see your finger?"
+		description={`A circle appears at a random moment — tap it the instant you see it. ${ROUNDS} rounds, then you get average, min, and max latency in milliseconds.`}
+	/>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<div class="mb-4 flex flex-wrap items-center gap-3">
+			<Badge variant="outline" id="latency-round-badge">Round 0 / {ROUNDS}</Badge>
+			<Badge variant="outline" id="latency-avg-badge">Avg: —</Badge>
+			<Badge variant="outline" id="latency-min-badge">Min: —</Badge>
+			<Badge variant="outline" id="latency-max-badge">Max: —</Badge>
+		</div>
+
+		<div
+			id="latency-zone"
+			class="test-zone-h-65 relative flex min-h-[420px] w-full touch-none items-center justify-center overflow-hidden rounded-lg border border-hairline bg-screen select-none"
+		>
+			<button
+				type="button"
+				id="latency-start"
+				class="rounded-pill bg-canvas px-6 py-3 text-button-lg text-ink"
+			>
+				Start test
+			</button>
+
+			<p id="latency-status" class="hidden text-body-lg text-on-screen/60">Wait for it&hellip;</p>
+
+			<button
+				type="button"
+				id="latency-target"
+				aria-label="Tap now"
+				class="hidden h-40 w-40 rounded-full bg-cyan shadow-modal"
+			></button>
+
+			<div id="latency-result" class="hidden text-center">
+				<p class="font-mono text-caption uppercase tracking-wide text-on-screen/50">Result</p>
+				<p id="latency-result-value" class="mt-1 text-display-xl text-on-screen">—</p>
+			</div>
+		</div>
+
+		<div id="latency-summary" class="mt-6 hidden rounded-lg border border-hairline bg-canvas p-6 text-center">
+			<p class="font-mono text-caption uppercase tracking-wide text-mute">Results</p>
+			<p id="latency-summary-value" class="mt-2 text-display-xl text-ink">—</p>
+			<p id="latency-summary-detail" class="mt-2 text-body-md text-body">&nbsp;</p>
+			<button
+				type="button"
+				id="latency-restart"
+				class="mt-4 rounded-pill bg-primary px-5 py-2.5 text-button-md text-on-primary"
+			>
+				Try again
+			</button>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to check touch delay and screen response time">
+		<p>Touch latency is the delay between your finger touching the glass and the device reacting. A little delay is normal on every touchscreen, but a screen that suddenly feels sluggish, or that reacts to some taps much later than others, usually points to a software or hardware problem. This touch latency test gives you a quick, repeatable number to compare.</p>
+
+		<h3>How to run the touch latency test</h3>
+		<ol>
+			<li>Hold the device the way you normally use it and tap <strong>Start test</strong>.</li>
+			<li>Wait for the circle. Tapping early restarts the round, so don’t try to anticipate it.</li>
+			<li>Tap the circle the instant it appears. The result for that round shows in milliseconds.</li>
+			<li>After 8 rounds you get your average, fastest, and slowest response time.</li>
+			<li>Run it two or three times. Your first run is usually slower while you get used to it.</li>
+		</ol>
+
+		<h3>What your result actually measures</h3>
+		<p>The number you see is the time from the target being drawn to the browser receiving your touch. It includes three things: <strong>your reaction time</strong> (typically 180–280 ms), the <strong>display delay</strong> before the circle actually lights up, and the <strong>touch processing delay</strong> before the device reports your finger. Because human reaction time is the largest part, this test is most useful for comparing devices with the same person, or for spotting rounds that are far slower than the rest.</p>
+
+		<h3>How to read your results</h3>
+		<table>
+			<thead>
+				<tr><th>Average</th><th>What it usually means</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Under 250 ms</td><td>Fast reactions on a responsive screen. Nothing to worry about.</td></tr>
+				<tr><td>250–350 ms</td><td>Normal for most people and devices.</td></tr>
+				<tr><td>Over 350 ms</td><td>Try again when you’re focused. If it stays high, compare with another device.</td></tr>
+				<tr><td>Max is 150+ ms above min</td><td>Inconsistent response. Missed or late-registered taps are worth investigating.</td></tr>
+			</tbody>
+		</table>
+		<p>A wide spread between your fastest and slowest rounds is often more telling than the average. If some taps only register on the second press, run the <a href="/dead-zone-test/">dead zone test</a> to check whether part of the screen is unresponsive, and the <a href="/tap-accuracy-test/">tap accuracy test</a> to see whether taps are landing where you expect.</p>
+
+		<h3>Common causes of touch screen delay</h3>
+		<ul>
+			<li><strong>Power saving:</strong> Low Power Mode (iPhone) and Battery Saver (Android) can lower the refresh rate and slow the processor.</li>
+			<li><strong>Refresh rate:</strong> a 60 Hz setting feels slower than 90 or 120 Hz. Check your display settings.</li>
+			<li><strong>Background load:</strong> too many open apps, an update installing, or a hot device that is throttling.</li>
+			<li><strong>Screen protectors:</strong> thick glass protectors can make touches register late or not at all.</li>
+			<li><strong>Hardware:</strong> a damaged digitizer or a low-quality replacement screen after a repair.</li>
+		</ul>
+
+		<h3>How to reduce touch latency</h3>
+		<p>Restart the device, turn off power-saving modes, set the highest refresh rate available, and close apps you aren’t using. On Android, a screen protector or touch sensitivity setting in Display settings can help with thicker protectors. If response time is still poor and inconsistent after that, especially following a screen replacement, the digitizer itself may be the problem.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Touch latency questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	const ROUNDS = 8;
+	const zone = document.getElementById('latency-zone') as HTMLElement;
+	const startBtn = document.getElementById('latency-start') as HTMLButtonElement;
+	const status = document.getElementById('latency-status') as HTMLElement;
+	const target = document.getElementById('latency-target') as HTMLButtonElement;
+	const resultBox = document.getElementById('latency-result') as HTMLElement;
+	const resultValue = document.getElementById('latency-result-value') as HTMLElement;
+	const roundBadge = document.getElementById('latency-round-badge');
+	const avgBadge = document.getElementById('latency-avg-badge');
+	const minBadge = document.getElementById('latency-min-badge');
+	const maxBadge = document.getElementById('latency-max-badge');
+	const summary = document.getElementById('latency-summary');
+	const summaryValue = document.getElementById('latency-summary-value');
+	const summaryDetail = document.getElementById('latency-summary-detail');
+	const restartBtn = document.getElementById('latency-restart');
+
+	let round = 0;
+	let results: number[] = [];
+	let promptTime = 0;
+	let phase: 'idle' | 'waiting' | 'active' = 'idle';
+	let waitTimer: number | null = null;
+
+	function show(el: HTMLElement, visible: boolean): void {
+		el.classList.toggle('hidden', !visible);
+	}
+
+	function updateBadges(): void {
+		if (roundBadge) roundBadge.textContent = `Round ${round} / ${ROUNDS}`;
+		if (results.length > 0) {
+			const avg = results.reduce((a, b) => a + b, 0) / results.length;
+			if (avgBadge) avgBadge.textContent = `Avg: ${Math.round(avg)} ms`;
+			if (minBadge) minBadge.textContent = `Min: ${Math.round(Math.min(...results))} ms`;
+			if (maxBadge) maxBadge.textContent = `Max: ${Math.round(Math.max(...results))} ms`;
+		}
+	}
+
+	function scheduleRound(): void {
+		phase = 'waiting';
+		show(startBtn, false);
+		show(resultBox, false);
+		show(target, false);
+		show(status, true);
+
+		const delay = 800 + Math.random() * 1800;
+		waitTimer = window.setTimeout(() => {
+			phase = 'active';
+			show(status, false);
+			show(target, true);
+			promptTime = performance.now();
+		}, delay);
+	}
+
+	function onZonePointer(clientEventTime: number): void {
+		if (phase === 'waiting') {
+			// too soon — restart the wait without counting this round
+			if (waitTimer) window.clearTimeout(waitTimer);
+			show(status, true);
+			status.textContent = 'Too soon — wait for the circle';
+			window.setTimeout(() => {
+				status.textContent = 'Wait for it…';
+				scheduleRound();
+			}, 700);
+			phase = 'idle';
+			return;
+		}
+
+		if (phase === 'active') {
+			const latency = clientEventTime - promptTime;
+			results.push(latency);
+			round += 1;
+			phase = 'idle';
+
+			show(target, false);
+			show(resultBox, true);
+			resultValue.textContent = `${Math.round(latency)} ms`;
+			updateBadges();
+
+			if (round >= ROUNDS) {
+				window.setTimeout(finish, 500);
+			} else {
+				window.setTimeout(scheduleRound, 600);
+			}
+		}
+	}
+
+	function finish(): void {
+		show(resultBox, false);
+		summary?.classList.remove('hidden');
+		const avg = results.reduce((a, b) => a + b, 0) / results.length;
+		if (summaryValue) summaryValue.textContent = `${Math.round(avg)} ms avg`;
+		if (summaryDetail) {
+			summaryDetail.textContent = `Min ${Math.round(Math.min(...results))} ms · Max ${Math.round(Math.max(...results))} ms over ${results.length} rounds.`;
+		}
+	}
+
+	function restart(): void {
+		round = 0;
+		results = [];
+		phase = 'idle';
+		summary?.classList.add('hidden');
+		updateBadges();
+		scheduleRound();
+	}
+
+	startBtn.addEventListener('click', () => scheduleRound());
+	restartBtn?.addEventListener('click', restart);
+
+	zone.addEventListener(
+		'touchstart',
+		(e) => {
+			if (phase === 'idle') return;
+			e.preventDefault();
+			onZonePointer(performance.now());
+		},
+		{ passive: false },
+	);
+
+	zone.addEventListener('click', () => {
+		if ('ontouchstart' in window) return;
+		if (phase === 'idle') return;
+		onZonePointer(performance.now());
+	});
+</script>

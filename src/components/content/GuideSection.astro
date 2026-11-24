@@ -1,0 +1,76 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface Props {
+	eyebrow?: string;
+	title: string;
+	id?: string;
+}
+
+const { eyebrow = 'Guide', title, id = 'guide' } = Astro.props;
+---
+
+<section id={id} class="scroll-mt-20 border-t border-hairline bg-canvas py-16 sm:py-24">
+	<div class="mx-auto max-w-3xl px-4 sm:px-6">
+		<SectionHeader eyebrow={eyebrow} title={title} />
+		<div class="guide mt-8 space-y-6 text-body-md text-body">
+			<slot />
+		</div>
+	</div>
+</section>
+
+<style>
+	.guide :global(h3) {
+		margin-top: 2.5rem;
+		font-size: var(--text-display-sm);
+		line-height: var(--text-display-sm--line-height);
+		letter-spacing: var(--text-display-sm--letter-spacing);
+		font-weight: var(--text-display-sm--font-weight);
+		color: var(--color-ink);
+	}
+	.guide :global(h3 + p),
+	.guide :global(h3 + ul),
+	.guide :global(h3 + ol) {
+		margin-top: 0.75rem;
+	}
+	.guide :global(ul) {
+		list-style: disc;
+		padding-left: 1.25rem;
+	}
+	.guide :global(ol) {
+		list-style: decimal;
+		padding-left: 1.25rem;
+	}
+	.guide :global(li + li) {
+		margin-top: 0.5rem;
+	}
+	.guide :global(strong) {
+		color: var(--color-ink);
+		font-weight: 500;
+	}
+	.guide :global(a) {
+		color: var(--color-ink);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.guide :global(a:hover) {
+		text-decoration: none;
+	}
+	.guide :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--text-body-sm);
+		line-height: var(--text-body-sm--line-height);
+	}
+	.guide :global(th),
+	.guide :global(td) {
+		border-bottom: 1px solid var(--color-hairline);
+		padding: 0.625rem 0.75rem 0.625rem 0;
+		text-align: left;
+		vertical-align: top;
+	}
+	.guide :global(th) {
+		color: var(--color-ink);
+		font-weight: 500;
+	}
+</style>

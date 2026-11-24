@@ -1,0 +1,64 @@
+---
+import Button from '../ui/Button.astro';
+---
+
+<section class="relative overflow-hidden border-b border-hairline bg-canvas">
+	<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+		<div
+			class="absolute left-1/2 top-[-15%] h-[620px] w-[620px] -translate-x-1/2 rounded-full opacity-70 blur-[100px]"
+			style="background: radial-gradient(circle at 30% 30%, var(--color-gradient-develop-start), transparent 60%), radial-gradient(circle at 70% 35%, var(--color-gradient-preview-start), transparent 55%), radial-gradient(circle at 50% 85%, var(--color-gradient-ship-start), transparent 55%);"
+		>
+		</div>
+		<div class="absolute inset-0 bg-gradient-to-b from-transparent via-canvas/70 to-canvas"></div>
+	</div>
+
+	<div class="mx-auto max-w-[1400px] px-4 py-24 text-center sm:px-6 sm:py-32">
+		<p class="mb-4 font-mono text-caption uppercase tracking-wide text-mute">
+			Free &middot; No install &middot; Runs entirely in your browser
+		</p>
+		<h1 class="mx-auto max-w-3xl text-display-xl text-ink">Free touch screen test, right in your browser.</h1>
+		<p class="mx-auto mt-4 max-w-xl text-body-lg text-body">
+			A free online touchscreen tester for iPhone, Android, iPad, and Chromebook. Check multi-touch,
+			gestures, dead zones, tap accuracy, and response latency &mdash; no app to install.
+		</p>
+
+		<div
+			id="hero-touch-badge"
+			class="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas px-3 py-1.5 text-body-sm-strong text-ink shadow-card"
+		>
+			<span data-badge-dot class="h-2 w-2 rounded-full bg-mute"></span>
+			<span data-badge-text>Checking touch support&hellip;</span>
+		</div>
+
+		<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+			<Button href="#test-suite" size="lg">Start testing</Button>
+			<Button href="/dead-zone-test/" variant="secondary" size="lg">Check for dead zones</Button>
+		</div>
+
+		<nav class="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-body-sm text-mute" aria-label="Site">
+			<a href="/about-us/" class="hover:text-ink">About Us</a>
+			<a href="/contact-us/" class="hover:text-ink">Contact Us</a>
+			<a href="/privacy-policy/" class="hover:text-ink">Privacy Policy</a>
+			<a href="/terms-and-conditions/" class="hover:text-ink">Terms &amp; Conditions</a>
+		</nav>
+	</div>
+</section>
+
+<script>
+	import { detectTouchCapabilities } from '../../scripts/touch-capabilities';
+
+	const dot = document.querySelector<HTMLElement>('#hero-touch-badge [data-badge-dot]');
+	const text = document.querySelector<HTMLElement>('#hero-touch-badge [data-badge-text]');
+	const caps = detectTouchCapabilities();
+
+	if (text && dot) {
+		if (caps.supportsTouch) {
+			const points = caps.maxTouchPoints || 1;
+			text.textContent = `Touch supported · up to ${points} point${points === 1 ? '' : 's'}`;
+			dot.classList.replace('bg-mute', 'bg-cyan-deep');
+		} else {
+			text.textContent = 'No touch input detected on this device';
+			dot.classList.replace('bg-mute', 'bg-warning');
+		}
+	}
+</script>

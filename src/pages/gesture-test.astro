@@ -1,0 +1,194 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GuideSection from '../components/content/GuideSection.astro';
+import FaqList, { type Faq } from '../components/content/FaqList.astro';
+import RelatedTests from '../components/content/RelatedTests.astro';
+import TestPageHeader from '../components/ui/TestPageHeader.astro';
+import Card from '../components/ui/Card.astro';
+import FullscreenToggle from '../components/ui/FullscreenToggle.astro';
+import TouchOnlyNotice from '../components/ui/TouchOnlyNotice.astro';
+
+const title = 'Swipe & Gesture Test — Tap, Swipe, Pinch & Rotate Online';
+const description =
+	'Free online swipe and gesture test. Check that your touch screen recognizes tap, double-tap, long press, swipes in all directions, pinch, and rotate.';
+
+const gestures = [
+	{ id: 'tap', label: 'Tap' },
+	{ id: 'doubletap', label: 'Double-tap' },
+	{ id: 'longpress', label: 'Long press' },
+	{ id: 'swipe-up', label: 'Swipe up' },
+	{ id: 'swipe-down', label: 'Swipe down' },
+	{ id: 'swipe-left', label: 'Swipe left' },
+	{ id: 'swipe-right', label: 'Swipe right' },
+	{ id: 'pinch-in', label: 'Pinch in' },
+	{ id: 'pinch-out', label: 'Pinch out' },
+	{ id: 'rotate', label: 'Rotate' },
+];
+
+const faqs: Faq[] = [
+	{
+		q: 'How do I test swipe on my touch screen?',
+		a: 'Swipe quickly across the gesture area in one direction — at least a few centimeters, in under about half a second. The matching chip (Swipe up, down, left, or right) lights up and the gesture is added to the history. Repeat in all four directions and in different parts of the area.',
+	},
+	{
+		q: 'Why isn’t my swipe being detected?',
+		a: 'Swipes that are too slow or too short are treated as a drag rather than a swipe. Make a quicker, longer flick. If fast, long swipes still fail in one area of the screen, check that area with the dead zone test.',
+	},
+	{
+		q: 'How do I test pinch-to-zoom?',
+		a: 'Place two fingers in the gesture area and move them apart (pinch out) or together (pinch in). If pinch never registers, run the multi-touch test to confirm the screen is tracking both fingers.',
+	},
+	{
+		q: 'What is the difference between a tap and a long press?',
+		a: 'In this test, a tap is a quick touch of under about a quarter of a second with almost no movement. Holding still for half a second or longer counts as a long press. Two taps close together in time and position count as a double-tap.',
+	},
+	{
+		q: 'Is gesture recognition the same on every phone?',
+		a: 'This test uses the same rules on every device, so results are comparable across phones and tablets. Apps and operating systems use their own thresholds, which is why a gesture might work here but feel different in a particular app.',
+	},
+];
+---
+
+<Layout title={title} description={description} app={{ name: 'Swipe and Gesture Test' }} breadcrumb='Gesture Test'>
+	<TestPageHeader
+		eyebrow="Gesture Recognition"
+		title="Ten gestures, recognized live"
+		description="Perform a gesture in the zone below — tap, swipe, pinch with two fingers, or twist to rotate. Each recognized gesture lights up and is added to the log."
+	>
+		<Fragment slot="actions">
+			<FullscreenToggle targetId="gesture-zone" />
+		</Fragment>
+	</TestPageHeader>
+
+	<section class="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
+		<TouchOnlyNotice />
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+			<div>
+				<div
+					id="gesture-zone"
+					class="test-zone-h-60 relative flex min-h-[380px] w-full touch-none flex-col items-center justify-center overflow-hidden rounded-lg border border-hairline bg-screen p-6 text-center select-none"
+				>
+					<p id="gesture-last-type" class="text-display-lg text-on-screen">Waiting for input</p>
+					<p id="gesture-last-time" class="mt-2 font-mono text-caption text-on-screen/50">&nbsp;</p>
+				</div>
+
+				<div class="mt-6 flex flex-wrap gap-2">
+					{
+						gestures.map((g) => (
+							<span
+								data-gesture-chip={g.id}
+								class="rounded-full border border-hairline bg-canvas px-3 py-1.5 text-body-sm text-body transition-colors"
+							>
+								{g.label}
+							</span>
+						))
+					}
+				</div>
+			</div>
+
+			<Card padding="lg" class="h-fit">
+				<h2 class="text-display-sm text-ink">Gesture history</h2>
+				<p class="mt-1 text-body-sm text-body">Most recent first.</p>
+				<ol id="gesture-history" class="mt-4 flex flex-col gap-2 font-mono text-caption text-body">
+					<li class="text-mute">No gestures yet</li>
+				</ol>
+			</Card>
+		</div>
+	</section>
+
+	<GuideSection eyebrow="Guide" title="How to test swipe, pinch, and other touch gestures">
+		<p>Most of what you do on a phone or tablet is a gesture: swiping between pages, pinching to zoom, long pressing for a menu. When a screen starts misreading gestures — swipes that turn into taps, pinches that don’t zoom — the device feels broken even if single taps still work. This gesture test checks all ten common gestures and logs each one it recognizes.</p>
+
+		<h3>The ten gestures and how to perform them</h3>
+		<table>
+			<thead>
+				<tr><th>Gesture</th><th>How to do it</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>Tap</td><td>A quick touch and release without moving.</td></tr>
+				<tr><td>Double-tap</td><td>Two quick taps in the same spot.</td></tr>
+				<tr><td>Long press</td><td>Touch and hold still for about half a second.</td></tr>
+				<tr><td>Swipe up / down / left / right</td><td>A fast flick of a few centimeters in one direction.</td></tr>
+				<tr><td>Pinch in</td><td>Two fingers moving toward each other.</td></tr>
+				<tr><td>Pinch out</td><td>Two fingers moving apart.</td></tr>
+				<tr><td>Rotate</td><td>Two fingers twisting around each other.</td></tr>
+			</tbody>
+		</table>
+
+		<h3>How to run a full swipe and gesture test</h3>
+		<ol>
+			<li>Tap the <strong>fullscreen</strong> button so system gestures are less likely to interfere.</li>
+			<li>Work through each chip below the test area until every one has lit up at least once.</li>
+			<li>Repeat swipes near each edge and in the center — problems often show up in only one area.</li>
+			<li>Check the gesture history: each entry shows the time, gesture, and where it happened.</li>
+		</ol>
+
+		<h3>What the results tell you</h3>
+		<ul>
+			<li><strong>Swipes registering as taps or long presses</strong> — the screen is losing track of your finger mid-movement. Check the <a href="/draw-test/">draw test</a> for broken lines.</li>
+			<li><strong>Pinch or rotate never registers</strong> — the screen may not be tracking the second finger. Confirm with the <a href="/multi-touch-test/">multi-touch test</a>.</li>
+			<li><strong>Double-taps coming through as two separate taps</strong> — taps are landing late or in different positions. The <a href="/tap-accuracy-test/">tap accuracy test</a> shows how precise they are.</li>
+			<li><strong>Gestures you didn’t make appear in the history</strong> — a sign of ghost touches.</li>
+			<li><strong>Swipes fail in only one region</strong> — run the <a href="/dead-zone-test/">dead zone test</a> on that area.</li>
+		</ul>
+
+		<h3>Tips for accurate results</h3>
+		<p>Use a clean, dry finger and a clean screen. Moisture and grease can make swipes skip. If you use a thick screen protector, try enabling your device’s touch sensitivity or glove mode, or test once without the protector. Starting a swipe from the very edge of the screen may trigger the system’s back or home gesture instead, so begin slightly inside the test area.</p>
+	</GuideSection>
+
+	<FaqList faqs={faqs} title="Gesture test questions" />
+	<RelatedTests />
+</Layout>
+
+<script>
+	import { GestureDetector, GESTURE_EVENT, type GestureEventDetail } from '../scripts/gesture-detector';
+	import { formatClock } from '../scripts/format';
+
+	const zone = document.getElementById('gesture-zone') as HTMLElement;
+	const lastType = document.getElementById('gesture-last-type');
+	const lastTime = document.getElementById('gesture-last-time');
+	const history = document.getElementById('gesture-history');
+	const chips = new Map(
+		Array.from(document.querySelectorAll<HTMLElement>('[data-gesture-chip]')).map((el) => [el.dataset.gestureChip, el]),
+	);
+
+	const labels: Record<string, string> = {
+		tap: 'Tap',
+		doubletap: 'Double-tap',
+		longpress: 'Long press',
+		'swipe-up': 'Swipe up',
+		'swipe-down': 'Swipe down',
+		'swipe-left': 'Swipe left',
+		'swipe-right': 'Swipe right',
+		'pinch-in': 'Pinch in',
+		'pinch-out': 'Pinch out',
+		rotate: 'Rotate',
+	};
+
+	let entries = 0;
+
+	new GestureDetector(zone);
+
+	zone.addEventListener(GESTURE_EVENT, (e) => {
+		const detail = (e as CustomEvent<GestureEventDetail>).detail;
+		const label = labels[detail.type] ?? detail.type;
+
+		if (lastType) lastType.textContent = label;
+		if (lastTime) lastTime.textContent = formatClock(detail.timestamp);
+
+		const chip = chips.get(detail.type);
+		if (chip) {
+			chip.classList.add('!border-ink', '!bg-canvas-soft-2', 'text-ink');
+			window.setTimeout(() => chip.classList.remove('!border-ink', '!bg-canvas-soft-2'), 600);
+		}
+
+		if (history) {
+			if (entries === 0) history.innerHTML = '';
+			const li = document.createElement('li');
+			li.textContent = `${formatClock(detail.timestamp)}  ${label}  (${Math.round(detail.x)}, ${Math.round(detail.y)})`;
+			history.prepend(li);
+			entries += 1;
+			while (history.children.length > 12) history.lastElementChild?.remove();
+		}
+	});
+</script>
